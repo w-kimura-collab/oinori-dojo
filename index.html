@@ -7,24 +7,26 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="撃退道場">
-<meta name="theme-color" content="#1b1b1f">
+<meta name="theme-color" content="#1a1c2c">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>お祈りメール撃退道場 〜正拳突きの型〜</title>
-<link href="https://fonts.googleapis.com/css2?family=Yuji+Syuku&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
 <style>
   :root{
-    --sumi:#1b1b1f;
-    --washi:#f3ecdd;
-    --shu:#c73e2d;
-    --kin:#c9a227;
-    --ai:#2a4d69;
+    --bg:#1a1c2c;
+    --panel:#262b44;
+    --ink:#101018;
+    --paper:#f4f4f4;
+    --red:#e43b44;
+    --gold:#f4b41b;
+    --dim:#3a3f5c;
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  html,body{height:100%;overflow:hidden;background:var(--sumi);position:fixed;width:100%;overscroll-behavior:none;}
+  html,body{height:100%;overflow:hidden;background:var(--ink);position:fixed;width:100%;overscroll-behavior:none;}
   body{
-    font-family:'Zen Kaku Gothic New',sans-serif;
-    color:var(--washi);
+    font-family:'DotGothic16',monospace;
+    color:var(--paper);
     display:flex;align-items:center;justify-content:center;
     touch-action:manipulation;
   }
@@ -32,108 +34,309 @@
     position:relative;
     width:min(100vw,520px);
     height:100dvh;
-    max-height:100dvh;
-    background:var(--washi);
+    background:var(--bg);
     overflow:hidden;
     user-select:none;
   }
-  canvas{display:block;width:100%;height:100%;}
+  canvas{display:block;width:100%;height:100%;image-rendering:pixelated;}
+
+  /* CRT scanlines */
+  #scan{
+    position:absolute;inset:0;z-index:6;pointer-events:none;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.14) 0 1px, transparent 1px 3px);
+    mix-blend-mode:multiply;
+  }
 
   /* ---------- HUD ---------- */
   #hud{
     position:absolute;top:env(safe-area-inset-top,0px);left:0;right:0;
     display:flex;justify-content:space-between;align-items:flex-start;
-    padding:10px 14px;pointer-events:none;z-index:5;
+    padding:10px 12px;pointer-events:none;z-index:5;
   }
-  #hearts{font-size:22px;letter-spacing:2px;filter:drop-shadow(0 1px 0 rgba(0,0,0,.25));}
+  #hearts{
+    font-size:24px;letter-spacing:3px;line-height:1;
+    color:var(--red);
+    text-shadow:2px 2px 0 var(--ink);
+  }
+  #hearts .off{color:var(--dim);}
+  #naitei{
+    margin-top:6px;
+    font-size:14px;color:var(--gold);
+    text-shadow:1px 1px 0 var(--ink);
+  }
   #scorebox{text-align:right;}
   #score{
-    font-family:'Yuji Syuku',serif;
-    font-size:28px;line-height:1;color:var(--sumi);
+    font-size:26px;line-height:1;color:var(--paper);
+    text-shadow:2px 2px 0 var(--ink);
   }
   #combo{
-    font-size:12px;font-weight:700;color:var(--shu);
-    min-height:16px;
+    font-size:13px;color:var(--gold);
+    text-shadow:1px 1px 0 var(--ink);
+    min-height:17px;
   }
+  #muteBtn{
+    pointer-events:auto;
+    margin-top:6px;
+    font-family:'DotGothic16',monospace;
+    font-size:14px;line-height:1;
+    color:var(--paper);
+    background:var(--panel);
+    border:2px solid var(--paper);
+    padding:5px 8px;cursor:pointer;
+    box-shadow:2px 2px 0 var(--ink);
+  }
+  #muteBtn:active{transform:translate(2px,2px);box-shadow:none;}
 
   /* ---------- overlays ---------- */
   .overlay{
     position:absolute;inset:0;z-index:10;
     display:flex;flex-direction:column;align-items:center;justify-content:center;
-    text-align:center;padding:24px;
-    background:rgba(27,27,31,.88);
+    text-align:center;padding:20px;
+    background:var(--bg);
   }
   .overlay.hidden{display:none;}
+  .startov{
+    justify-content:flex-start;
+    overflow-y:auto;
+    padding-top:calc(env(safe-area-inset-top,0px) + 18px);
+    padding-bottom:30px;
+  }
+  /* ---- ファミコンカセット ---- */
+  .cart{
+    width:min(88vw,330px);
+    background:#cfc7bd;
+    border:4px solid var(--ink);
+    box-shadow:8px 8px 0 var(--ink);
+    padding:10px 12px 14px;
+    position:relative;
+    flex-shrink:0;
+  }
+  .cart-ridge{
+    height:22px;
+    background:repeating-linear-gradient(180deg,#b8afa2 0 3px,#cfc7bd 3px 6px);
+    border:3px solid var(--ink);
+    margin-bottom:10px;
+  }
+  .cart-label{
+    background:#f7efdb;
+    border:3px solid var(--ink);
+    box-shadow:inset 0 0 0 3px var(--red);
+    padding:8px 8px 6px;
+  }
+  .label-strip{
+    display:flex;justify-content:space-between;
+    background:var(--red);color:#fff;
+    font-size:9px;letter-spacing:.08em;
+    padding:2px 6px;margin-bottom:6px;
+  }
+  .label-title{
+    font-size:17px;line-height:1.3;
+    color:var(--red);
+    text-shadow:1px 1px 0 #fff, 2px 2px 0 var(--ink);
+    text-align:center;
+  }
+  .label-title .big{
+    font-size:30px;
+    color:var(--red);
+    text-shadow:2px 2px 0 #fff, 4px 4px 0 var(--ink);
+  }
+  .label-art{
+    display:block;width:100%;
+    image-rendering:pixelated;
+    border:2px solid var(--ink);
+    margin:6px 0 4px;
+  }
+  .label-sub{
+    text-align:center;font-size:10px;color:#5a5344;
+    letter-spacing:.15em;
+  }
+  .cart-screws{position:absolute;bottom:5px;left:0;right:0;display:flex;justify-content:space-between;padding:0 10px;}
+  .cart-screws i{width:6px;height:6px;background:#8f877b;border:1px solid var(--ink);border-radius:50%;}
+  .startframe{margin-top:18px;}
+  .frame{
+    border:4px solid var(--paper);
+    box-shadow:0 0 0 4px var(--ink), 8px 8px 0 4px var(--ink);
+    background:var(--panel);
+    padding:26px 20px;
+    max-width:420px;width:100%;
+  }
   h1{
-    font-family:'Yuji Syuku',serif;
-    font-size:clamp(34px,9vw,52px);
-    line-height:1.25;color:var(--washi);
-    writing-mode:horizontal-tb;
+    font-size:clamp(28px,7.6vw,40px);
+    line-height:1.4;color:var(--paper);
+    text-shadow:3px 3px 0 var(--ink);
+    font-weight:normal;
   }
-  h1 .shu{color:var(--shu);}
-  .sub{margin-top:14px;font-size:14px;line-height:1.9;opacity:.9;}
-  .sub b{color:var(--kin);}
+  h1 .shu{color:var(--red);}
+  .pxbar{
+    height:6px;margin:14px auto 0;width:70%;
+    background:repeating-linear-gradient(90deg,var(--red) 0 8px,transparent 8px 12px);
+  }
+  .sub{margin-top:14px;font-size:14px;line-height:1.9;}
+  .sub b{color:var(--gold);}
   .rule{
-    margin-top:18px;font-size:13px;line-height:2;
-    border:1px solid rgba(243,236,221,.35);
-    padding:12px 18px;border-radius:4px;
+    margin-top:16px;font-size:12px;line-height:2;
+    border:2px solid var(--dim);
+    padding:10px 12px;text-align:left;
   }
+  .rule b{color:var(--gold);}
+  .rule-h{
+    text-align:center;color:var(--red);
+    margin:6px 0 6px;font-size:13px;
+  }
+  .ctrl-demo{
+    position:relative;
+    background:var(--bg);
+    border:2px solid var(--dim);
+    margin:4px auto 8px;
+    padding:8px 0 10px;
+    text-align:center;
+    max-width:230px;
+  }
+  .demo-mail{
+    font-size:22px;line-height:1;
+    color:var(--paper);
+    animation:fall 1.6s linear infinite;
+  }
+  @keyframes fall{
+    0%{transform:translateY(-6px);opacity:1;}
+    70%{transform:translateY(26px);opacity:1;}
+    82%{transform:translateY(30px) scale(1.4);opacity:0;}
+    100%{opacity:0;}
+  }
+  .demo-line{
+    height:0;border-top:2px dashed var(--paper);
+    margin:6px 12px;
+  }
+  .demo-pads{display:flex;justify-content:center;gap:6px;margin-top:6px;}
+  .demo-pad{
+    position:relative;
+    display:inline-block;width:44px;
+    padding:6px 0;text-align:center;
+    background:var(--bg);
+    border:2px solid var(--paper);
+    color:var(--dim);
+  }
+  .demo-pad.on{
+    color:var(--paper);
+    animation:padflash 1.6s steps(1,end) infinite;
+  }
+  @keyframes padflash{
+    70%{background:var(--bg);}
+    72%{background:var(--red);}
+    90%{background:var(--bg);}
+  }
+  .finger{
+    position:absolute;left:50%;bottom:-14px;
+    transform:translateX(-50%);
+    font-size:18px;
+    animation:tapmove 1.6s ease-in-out infinite;
+  }
+  @keyframes tapmove{
+    0%,60%{transform:translate(-50%,6px);}
+    72%{transform:translate(-50%,-4px);}
+    85%,100%{transform:translate(-50%,6px);}
+  }
+  #ctrlTouch,#ctrlPc{margin-bottom:4px;}
+  body.pc #ctrlTouch{display:none;}
+  body.pc .finger{display:none;}
+  body.touch #ctrlPc{display:none;}
   .btn{
-    margin-top:26px;
-    font-family:'Yuji Syuku',serif;
-    font-size:24px;letter-spacing:.2em;
-    color:var(--washi);background:var(--shu);
-    border:none;padding:14px 46px;border-radius:6px;
+    margin-top:24px;
+    font-family:'DotGothic16',monospace;
+    font-size:20px;letter-spacing:.15em;
+    color:var(--paper);background:var(--red);
+    border:3px solid var(--ink);
+    padding:12px 40px;
     cursor:pointer;
-    box-shadow:0 4px 0 #8f2a1d;
+    box-shadow:4px 4px 0 var(--ink);
   }
-  .btn:active{transform:translateY(3px);box-shadow:0 1px 0 #8f2a1d;}
-  #finalstats{
-    margin-top:10px;
-    font-family:'Yuji Syuku',serif;
-    font-size:20px;line-height:2;color:var(--washi);
-  }
+  .btn:active{transform:translate(4px,4px);box-shadow:none;}
+  .blink{animation:bl 1s steps(2,end) infinite;}
+  @keyframes bl{50%{opacity:0;}}
+  #finalstats{margin-top:12px;font-size:15px;line-height:2;}
+  #finalstats .kin{color:var(--gold);}
   #rank{
-    display:inline-block;margin-top:8px;
-    font-family:'Yuji Syuku',serif;font-size:42px;color:var(--shu);
-    border:3px solid var(--shu);border-radius:50%;
-    width:86px;height:86px;line-height:80px;
-    transform:rotate(-8deg);
+    display:inline-block;margin-top:12px;
+    font-size:30px;color:var(--gold);
+    border:3px solid var(--gold);
+    padding:8px 22px;
+    text-shadow:2px 2px 0 var(--ink);
+    box-shadow:4px 4px 0 var(--ink);
+    transform:rotate(-3deg);
   }
-  #gtitle{font-family:'Yuji Syuku',serif;font-size:clamp(38px,10vw,56px);color:var(--shu);}
-  .hint{margin-top:16px;font-size:11px;opacity:.6;}
+  #gtitle{
+    font-size:clamp(22px,6vw,30px);line-height:1.7;color:var(--red);
+    text-shadow:3px 3px 0 var(--ink);
+  }
+  .hint{margin-top:14px;font-size:11px;color:var(--dim);}
 </style>
 </head>
 <body>
 <div id="stage">
   <canvas id="cv"></canvas>
+  <div id="scan"></div>
 
   <div id="hud">
-    <div id="hearts"></div>
+    <div>
+      <div id="hearts"></div>
+      <div id="naitei"></div>
+    </div>
     <div id="scorebox">
       <div id="score">0</div>
       <div id="combo"></div>
+      <button id="muteBtn">♪ON</button>
     </div>
   </div>
 
-  <div id="start" class="overlay">
-    <h1>お祈りメール<br><span class="shu">撃退道場</span></h1>
-    <div class="sub">降りそそぐ祈りを、<b>正拳突き</b>で粉砕せよ。</div>
-    <div class="rule">
-      レーンをタップ(または ← ↓ → / D F J)で突き<br>
-      🟨 <b>金の内定メール</b>は殴らず受け取れ(❤️回復)<br>
-      空振り・撃ち漏らしで ❤️ が減る。ゼロでお祈り。<br>
-      規定数を撃墜すると<b>就活偏差値</b>が上がり、次の企業へ。
+  <div id="start" class="overlay startov">
+    <div class="cart">
+      <div class="cart-ridge"></div>
+      <div class="cart-label">
+        <div class="label-strip"><span>シューカツシリーズ Vol.1</span><span>PFT</span></div>
+        <div class="label-title">お祈りメール<br><span class="big">撃退道場</span></div>
+        <img class="label-art" alt="" src="data:image/png;base64,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">
+        <div class="label-sub">〜 SEIKEN-ZUKI NO KATA 〜</div>
+      </div>
+      <div class="cart-screws"><i></i><i></i></div>
     </div>
-    <button class="btn" id="startBtn">入 門</button>
-    <div class="hint">音が出ます 🔊</div>
+    <div class="frame startframe">
+      <div class="sub">降りそそぐ祈りを<br><b>正拳突き</b>で粉砕せよ</div>
+      <div class="rule">
+        <div class="rule-h">─ そうさほうほう ─</div>
+        <div class="ctrl-demo">
+          <div class="demo-mail">✉</div>
+          <div class="demo-line"></div>
+          <div class="demo-pads">
+            <span class="demo-pad">突</span><span class="demo-pad on">突<span class="finger">👆</span></span><span class="demo-pad">突</span>
+          </div>
+        </div>
+        <div id="ctrlTouch">
+          メールが<b>白い線</b>に重なった瞬間、<br>
+          そのレーンの<b>「突」パッドをタップ!</b><br>
+          両手の親指で連打OK
+        </div>
+        <div id="ctrlPc">
+          🖱 左クリック=左拳 / 右クリック=右拳<br>
+          ⌨ ← ↓ → または D F J
+        </div>
+        <div class="rule-h">─ ルール ─</div>
+        ▶ <b>金の内定メール</b>は殴らず受け取れ ♥回復<br>
+        ▶ 空振り・撃ち漏らしで ♥−1 ゼロでお祈り<br>
+        ▶ 規定数撃墜で<b>就活偏差値</b>UP 次の企業へ
+      </div>
+      <button class="btn" id="startBtn"><span class="blink">▶</span> PUSH START</button>
+      <div class="hint">SOUND ON 推奨 🔊</div>
+    </div>
   </div>
 
   <div id="gameover" class="overlay hidden">
-    <div id="gtitle">今後のご活躍を<br>お祈り申し上げます</div>
-    <div id="finalstats"></div>
-    <div id="rank">段</div>
-    <button class="btn" id="retryBtn">再入門</button>
+    <div class="frame">
+      <div id="gtitle">今後のご活躍を<br>お祈り申し上げます</div>
+      <div class="pxbar"></div>
+      <div id="finalstats"></div>
+      <div id="rank">段</div><br>
+      <button class="btn" id="retryBtn"><span class="blink">▶</span> 再入門</button>
+    </div>
   </div>
 </div>
 
@@ -141,7 +344,7 @@
 (() => {
   const cv = document.getElementById('cv');
   const ctx = cv.getContext('2d');
-  const stage = document.getElementById('stage');
+  const stageEl = document.getElementById('stage');
   const heartsEl = document.getElementById('hearts');
   const scoreEl = document.getElementById('score');
   const comboEl = document.getElementById('combo');
@@ -150,39 +353,68 @@
   const statsEl = document.getElementById('finalstats');
   const rankEl = document.getElementById('rank');
 
-  let W = 0, H = 0, DPR = 1;
+  const C = {
+    bg:'#1a1c2c', panel:'#262b44', beam:'#1f2338', ink:'#101018',
+    paper:'#f4f4f4', gray:'#c8c8d0', red:'#e43b44', redDark:'#a1242c',
+    gold:'#f4b41b', goldSh:'#c98e12', dim:'#3a3f5c',
+    tatami:'#3e5f3a', tatamiD:'#2c4429', tatamiL:'#4a6f45',
+    skin:'#f0b988', skinSh:'#c98a5e'
+  };
+
+  let W=0, H=0, DPR=1, PX=4;
   function resize(){
-    DPR = Math.min(window.devicePixelRatio || 1, 2);
-    W = stage.clientWidth; H = stage.clientHeight;
-    cv.width = W * DPR; cv.height = H * DPR;
+    DPR = Math.min(window.devicePixelRatio||1, 2);
+    W = stageEl.clientWidth; H = stageEl.clientHeight;
+    cv.width = W*DPR; cv.height = H*DPR;
     ctx.setTransform(DPR,0,0,DPR,0,0);
+    ctx.imageSmoothingEnabled = false;
+    PX = Math.max(2, Math.floor(W/120));
   }
   resize();
   window.addEventListener('resize', resize);
 
+  function pr(x,y,w,h,c){ ctx.fillStyle=c; ctx.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h)); }
+  function drawSprite(spr,x,y,s,pal){
+    for(let r=0;r<spr.length;r++){
+      const row=spr[r];
+      for(let c=0;c<row.length;c++){
+        const col=pal[row[c]];
+        if(col) pr(x+c*s, y+r*s, s, s, col);
+      }
+    }
+  }
+  function pxText(str,x,y,size,fill,align){
+    ctx.font = size+"px 'DotGothic16',monospace";
+    ctx.textAlign = align||'center'; ctx.textBaseline='middle';
+    const o=Math.max(2,Math.round(size/12));
+    ctx.fillStyle=C.ink;
+    ctx.fillText(str,x+o,y+o);
+    ctx.fillStyle=fill;
+    ctx.fillText(str,x,y);
+  }
+
   // ---------- audio ----------
-  let ac = null;
-  function audio(){ if(!ac) ac = new (window.AudioContext||window.webkitAudioContext)(); return ac; }
+  let ac=null;
+  function audio(){ if(!ac) ac=new (window.AudioContext||window.webkitAudioContext)(); return ac; }
   function sPunch(perfect){
     try{
-      const a = audio(), t = a.currentTime;
-      const o = a.createOscillator(), g = a.createGain();
+      const a=audio(), t=a.currentTime;
+      const o=a.createOscillator(), g=a.createGain();
       o.type='square'; o.frequency.setValueAtTime(perfect?220:160,t);
       o.frequency.exponentialRampToValueAtTime(50,t+.12);
       g.gain.setValueAtTime(.25,t); g.gain.exponentialRampToValueAtTime(.001,t+.15);
       o.connect(g).connect(a.destination); o.start(t); o.stop(t+.16);
-      // paper shred noise
-      const buf = a.createBuffer(1, a.sampleRate*.1, a.sampleRate);
-      const d = buf.getChannelData(0);
+      const buf=a.createBuffer(1,a.sampleRate*.1,a.sampleRate);
+      const d=buf.getChannelData(0);
       for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*(1-i/d.length);
-      const n = a.createBufferSource(); n.buffer=buf;
-      const ng = a.createGain(); ng.gain.value=.15;
+      const n=a.createBufferSource(); n.buffer=buf;
+      const ng=a.createGain(); ng.gain.value=.15;
       n.connect(ng).connect(a.destination); n.start(t);
     }catch(e){}
   }
   function sWhiff(){
     try{
-      const a = audio(), t = a.currentTime;
+      const a=audio(), t=a.currentTime;
       const o=a.createOscillator(), g=a.createGain();
       o.type='sine'; o.frequency.setValueAtTime(700,t);
       o.frequency.exponentialRampToValueAtTime(180,t+.2);
@@ -214,6 +446,66 @@
     }catch(e){}
   }
 
+  // ---------- BGM ----------
+  const bgm = { on:true, playing:false, step:0, next:0, timer:null, gain:null };
+  const IN_SCALE = { A3:220, Bb3:233.08, D4:293.66, E4:329.63, G4:392, A4:440, Bb4:466.16 };
+  const MELODY = [
+    IN_SCALE.A4, null, IN_SCALE.G4, null,
+    IN_SCALE.E4, null, IN_SCALE.D4, IN_SCALE.E4,
+    IN_SCALE.G4, null, IN_SCALE.A4, IN_SCALE.Bb4,
+    IN_SCALE.A4, IN_SCALE.G4, IN_SCALE.E4, null
+  ];
+  function bgmBpm(){ return Math.min(176, 116 + stageIdx*7); }
+  function taiko(t,big){
+    const a=audio();
+    const o=a.createOscillator(), g=a.createGain();
+    o.type='sine';
+    o.frequency.setValueAtTime(big?110:90,t);
+    o.frequency.exponentialRampToValueAtTime(40,t+.18);
+    g.gain.setValueAtTime(big?.5:.3,t);
+    g.gain.exponentialRampToValueAtTime(.001,t+.2);
+    o.connect(g).connect(bgm.gain); o.start(t); o.stop(t+.22);
+  }
+  function pluck(t,f){
+    const a=audio();
+    const o=a.createOscillator(), g=a.createGain();
+    o.type='square'; o.frequency.value=f;
+    g.gain.setValueAtTime(.11,t);
+    g.gain.exponentialRampToValueAtTime(.001,t+.26);
+    o.connect(g).connect(bgm.gain); o.start(t); o.stop(t+.28);
+    const o2=a.createOscillator(), g2=a.createGain();
+    o2.type='triangle'; o2.frequency.value=f;
+    g2.gain.setValueAtTime(.14,t);
+    g2.gain.exponentialRampToValueAtTime(.001,t+.3);
+    o2.connect(g2).connect(bgm.gain); o2.start(t); o2.stop(t+.32);
+  }
+  function bgmSchedule(){
+    if(!bgm.playing) return;
+    const a=audio();
+    const spb = 60/bgmBpm()/2;
+    while(bgm.next < a.currentTime + 0.15){
+      const s = bgm.step % 16;
+      if(s%4===0) taiko(bgm.next, s===0);
+      if(stageIdx>=3 && s===14) taiko(bgm.next,false);
+      const n = MELODY[s];
+      if(n) pluck(bgm.next,n);
+      bgm.next += spb;
+      bgm.step++;
+    }
+    bgm.timer = setTimeout(bgmSchedule, 60);
+  }
+  function bgmStart(){
+    if(!bgm.on || bgm.playing) return;
+    const a=audio();
+    if(!bgm.gain){ bgm.gain=a.createGain(); bgm.gain.gain.value=0.28; bgm.gain.connect(a.destination); }
+    bgm.playing=true; bgm.step=0; bgm.next=a.currentTime+0.05;
+    bgmSchedule();
+  }
+  function bgmStop(){
+    bgm.playing=false;
+    if(bgm.timer){ clearTimeout(bgm.timer); bgm.timer=null; }
+  }
+
   // ---------- game state ----------
   const LANES = 3;
   const SNIPPETS = ['誠に残念ながら','慎重に選考した結果','ご期待に沿えず','今後のご活躍を','貴意に添いかねる','厳正なる選考の末'];
@@ -229,65 +521,67 @@
   ];
   function curStage(){ return STAGES[Math.min(stageIdx, STAGES.length-1)]; }
   function endlessBoost(){ return stageIdx >= STAGES.length ? 1 + (stageIdx-STAGES.length+1)*0.12 : 1; }
-  let mails, parts, texts, fists, score, combo, maxCombo, hearts, punched;
+
+  let mails, parts, texts, fists, fists2, fistSide, score, combo, maxCombo, hearts, punched, naitei;
   let stageIdx, stageKills, introT;
   let running=false, tPrev=0, spawnTimer=0, elapsed=0, shake=0;
+  let padFlash=[0,0,0], hintT=0;
 
   function laneX(i){ return W/LANES*(i+0.5); }
   function hitY(){ return H - 150; }
 
   function reset(){
-    mails=[]; parts=[]; texts=[]; fists=[0,0,0];
-    score=0; combo=0; maxCombo=0; hearts=5; punched=0;
+    mails=[]; parts=[]; texts=[]; fists=[0,0,0]; fists2=[0,0,0]; fistSide=[0,1,0];
+    score=0; combo=0; maxCombo=0; hearts=5; punched=0; naitei=0;
     spawnTimer=0; elapsed=0; shake=0;
     stageIdx=0; stageKills=0; introT=2.4;
+    padFlash=[0,0,0]; hintT=0;
     updateHUD();
   }
 
+  const naiteiEl = document.getElementById('naitei');
   function updateHUD(){
-    heartsEl.textContent = '❤️'.repeat(hearts) + '🖤'.repeat(Math.max(0,5-hearts));
+    heartsEl.innerHTML = '♥'.repeat(hearts) + '<span class="off">' + '♥'.repeat(Math.max(0,5-hearts)) + '</span>';
+    naiteiEl.textContent = '内定 ' + naitei + '社';
     scoreEl.textContent = score;
-    comboEl.textContent = combo>=2 ? combo+' 連撃' : '';
+    comboEl.textContent = combo>=2 ? combo+' RENGEKI' : '';
   }
 
   function spawn(){
     const st = curStage(), boost = endlessBoost();
     const lane = Math.floor(Math.random()*LANES);
     const gold = Math.random() < st.gold;
-    const ramp = 1 + (stageKills/st.need)*0.25; // ステージ内でも徐々に加速
+    const ramp = 1 + (stageKills/st.need)*0.25;
     const speed = (150 + Math.random()*40) * st.spd * ramp * boost * (H/700);
     mails.push({
       lane, y:-60, speed, gold,
       snippet:SNIPPETS[Math.floor(Math.random()*SNIPPETS.length)],
       dead:false,
-      ghost: !gold && st.ghost && Math.random()<0.35,   // サイレントお祈り(薄れて見えにくい)
-      vary:  !gold && st.vary  && Math.random()<0.35,   // フェイント(速度が揺れる)
+      ghost: !gold && st.ghost && Math.random()<0.35,
+      vary:  !gold && st.vary  && Math.random()<0.35,
       ph: Math.random()*Math.PI*2
     });
   }
 
   function stageClear(){
-    // 残ったメールはボーナス粉砕
     for(const m of mails){ if(!m.dead){ m.dead=true; if(!m.gold){ shred(laneX(m.lane), m.y, false); score+=50; } } }
     sGold();
     if(hearts<5){ hearts++; }
-    addText(W/2, H*0.35, '内定辞退!次の企業へ', '#c9a227', 26);
+    addText(W/2, H*0.35, '内定辞退!次の企業へ', C.gold, 22);
     stageIdx++; stageKills=0; introT=2.4;
     updateHUD();
   }
 
   function addText(x,y,str,color,size){
-    texts.push({x,y,str,color,size:size||26,t:0});
+    texts.push({x,y,str,color,size:size||22,t:0});
   }
   function shred(x,y,gold){
-    for(let i=0;i<16;i++){
+    for(let i=0;i<14;i++){
       parts.push({
         x,y,
         vx:(Math.random()-.5)*420,
         vy:-Math.random()*420-60,
-        r:Math.random()*Math.PI,
-        vr:(Math.random()-.5)*12,
-        w:6+Math.random()*10, h:3+Math.random()*5,
+        s:PX*(1+Math.floor(Math.random()*2)),
         t:0, gold
       });
     }
@@ -295,14 +589,19 @@
 
   function loseHeart(reason){
     hearts--; shake=10; sDamage(); combo=0;
-    addText(W/2, H*0.4, reason, '#c73e2d', 30);
+    if(navigator.vibrate) navigator.vibrate([40,30,40]);
+    addText(W/2, H*0.4, reason, C.red, 26);
     updateHUD();
     if(hearts<=0) gameOver();
   }
 
-  function punch(lane){
+  function punch(lane, side){
     if(!running) return;
-    fists[lane]=1;
+    const s = (side===undefined) ? fistSide[lane] : side;
+    if(s===0){ fists[lane]=1; } else { fists2[lane]=1; }
+    fistSide[lane] = s===0 ? 1 : 0;
+    padFlash[lane]=1;
+    if(navigator.vibrate) navigator.vibrate(12);
     const hy = hitY();
     let best=null, bd=1e9;
     for(const m of mails){
@@ -325,7 +624,7 @@
       stageKills++;
       if(stageKills >= curStage().need){ updateHUD(); shred(laneX(lane), best.y, false); sPunch(perfect); stageClear(); return; }
       shred(laneX(lane), best.y, false);
-      addText(laneX(lane), best.y-40, perfect?'一本!':'有効', perfect?'#c73e2d':'#2a4d69', perfect?34:26);
+      addText(laneX(lane), best.y-40, perfect?'一本!':'有効', perfect?C.red:C.paper, perfect?28:22);
       sPunch(perfect);
       updateHUD();
     } else {
@@ -336,170 +635,210 @@
 
   function gameOver(){
     running=false;
-    const mins = elapsed;
+    bgmStop();
     const reached = stageIdx < STAGES.length ? STAGES[stageIdx].dev : STAGES[STAGES.length-1].dev + (stageIdx-STAGES.length+1)*2;
-    statsEl.innerHTML = `到達 就活偏差値 <span style="color:var(--kin)">${reached}</span><br>撃墜 ${punched} 通 / 最大 ${maxCombo} 連撃<br>得点 ${score}`;
+    statsEl.innerHTML = `到達 就活偏差値 <span class="kin">${reached}</span><br>内定ホルダー数 <span class="kin">${naitei}社</span><br>撃墜 ${punched} 通 / 最大 ${maxCombo} 連撃<br>SCORE ${score}`;
     let r='入門';
     if(stageIdx>=7) r='師範'; else if(stageIdx>=5) r='黒帯'; else if(stageIdx>=3) r='茶帯'; else if(stageIdx>=1) r='白帯';
     rankEl.textContent = r;
     overOv.classList.remove('hidden');
   }
 
+  // ---------- sprites ----------
+  const FIST = [
+    "..oooooooo..",
+    ".oaaaaaaaao.",
+    "oaabaabaabao".slice(0,12),
+    "oaaaaaaaaaao",
+    "oaabaabaabao".slice(0,12),
+    "oaaaaaaaaaao",
+    "oabaaaaaaba o".replace(' ',''),
+    ".oaaaaaaaao.",
+    "..oooooooo.."
+  ];
+  const FIST_PAL = { o:C.ink, a:C.skin, b:C.skinSh };
+
   // ---------- drawing ----------
-  function drawBG(){
-    // washi paper
-    ctx.fillStyle='#f3ecdd'; ctx.fillRect(0,0,W,H);
-    // lanes
-    ctx.strokeStyle='rgba(27,27,31,.12)'; ctx.lineWidth=1;
-    for(let i=1;i<LANES;i++){
-      ctx.beginPath(); ctx.moveTo(W/LANES*i,0); ctx.lineTo(W/LANES*i,H); ctx.stroke();
-    }
-    // hit line = tatami edge
-    const hy=hitY();
-    ctx.fillStyle='rgba(42,77,105,.12)';
-    ctx.fillRect(0,hy-34,W,68);
-    ctx.strokeStyle='#2a4d69'; ctx.lineWidth=2;
-    ctx.setLineDash([10,8]);
-    ctx.beginPath(); ctx.moveTo(0,hy); ctx.lineTo(W,hy); ctx.stroke();
-    ctx.setLineDash([]);
-    // dojo floor
-    ctx.fillStyle='#e5dcc6'; ctx.fillRect(0,hy+34,W,H);
-    ctx.strokeStyle='rgba(27,27,31,.1)';
-    for(let y=hy+64;y<H;y+=30){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+  // 星屑(固定シード)
+  const STARS = [];
+  for(let i=0;i<40;i++){
+    STARS.push({x:(i*97)%120/120, y:((i*61)%80)/200, tw:i%3});
   }
 
-  function drawMail(m){
-    const x=laneX(m.lane), y=m.y;
-    const w=Math.min(W/LANES-24,130), h=w*0.62;
-    ctx.save(); ctx.translate(x,y);
-    if(m.ghost) ctx.globalAlpha = 0.25 + 0.55*Math.abs(Math.sin(elapsed*2.5+m.ph));
-    // envelope
-    ctx.fillStyle = m.gold ? '#f5d97a' : '#ffffff';
-    ctx.strokeStyle = m.gold ? '#c9a227' : '#1b1b1f';
-    ctx.lineWidth=2;
-    ctx.beginPath();
-    ctx.roundRect(-w/2,-h/2,w,h,4);
-    ctx.fill(); ctx.stroke();
-    // flap
-    ctx.beginPath();
-    ctx.moveTo(-w/2,-h/2); ctx.lineTo(0,4); ctx.lineTo(w/2,-h/2);
-    ctx.stroke();
-    if(m.gold){
-      ctx.fillStyle='#8a6d1a';
-      ctx.font=`700 ${Math.round(w*0.2)}px 'Yuji Syuku',serif`;
-      ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.fillText('内 定', 0, h*0.18);
-    } else {
-      // red hanko 祈
-      ctx.save();
-      ctx.translate(w*0.28,h*0.1); ctx.rotate(-0.15);
-      ctx.strokeStyle='#c73e2d'; ctx.lineWidth=2;
-      ctx.strokeRect(-13,-13,26,26);
-      ctx.fillStyle='#c73e2d';
-      ctx.font=`700 18px 'Yuji Syuku',serif`;
-      ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.fillText('祈',0,1);
-      ctx.restore();
-      ctx.fillStyle='#555';
-      ctx.font=`500 ${Math.max(9,Math.round(w*0.085))}px 'Zen Kaku Gothic New',sans-serif`;
-      ctx.textAlign='left'; ctx.textBaseline='middle';
-      ctx.fillText(m.snippet, -w/2+8, h*0.14);
-      ctx.fillStyle='rgba(85,85,85,.5)';
-      ctx.fillRect(-w/2+8, h*0.26, w*0.6, 2);
-      ctx.fillRect(-w/2+8, h*0.34, w*0.45, 2);
+  function drawBG(){
+    const hy = hitY();
+    const floorY = hy + 40;
+    // 道場の壁
+    pr(0,0,W,floorY,C.panel);
+    pr(0,0,W,64,C.bg);
+    // 星屑(高窓の外)
+    for(const s of STARS){
+      const a = s.tw===0 || Math.floor(elapsed*2)%3!==s.tw;
+      if(a) pr(s.x*W, 8+s.y*H, PX, PX, C.dim);
     }
-    ctx.restore();
+    // 壁の梁
+    for(let y=90;y<floorY;y+=56){
+      pr(0,y,W,PX,C.beam);
+    }
+    // レーン仕切り
+    ctx.globalAlpha=.5;
+    for(let i=1;i<LANES;i++){
+      for(let y=0;y<floorY;y+=PX*3) pr(W/LANES*i-1,y,2,PX*2,C.ink);
+    }
+    ctx.globalAlpha=1;
+    // 打撃ゾーン
+    ctx.globalAlpha=.15;
+    pr(0,hy-34,W,68,C.paper);
+    ctx.globalAlpha=1;
+    for(let x=0;x<W;x+=PX*4) pr(x,hy-1,PX*2,2,C.paper);
+    // レーン中央の的マーカー
+    for(let i=0;i<LANES;i++){
+      const x=laneX(i);
+      pr(x-PX*2,hy-PX*5,PX*4,PX,C.red);
+      pr(x-PX,hy-PX*4,PX*2,PX,C.red);
+    }
+    // 畳の床
+    pr(0,floorY,W,H-floorY,C.tatami);
+    for(let y=floorY;y<H;y+=PX*7){
+      pr(0,y,W,PX,C.tatamiD);
+      for(let x=PX*2;x<W;x+=PX*9) pr(x,y+PX*3,PX*4,PX,C.tatamiL);
+    }
+    pr(0,floorY,W,PX,C.ink);
   }
 
   function drawStageHUD(){
     const st = curStage();
     const dev = stageIdx < STAGES.length ? st.dev : st.dev + (stageIdx-STAGES.length+1)*2;
-    // 上部中央:現在ステージ
-    ctx.save();
-    ctx.textAlign='center'; ctx.textBaseline='top';
-    ctx.fillStyle='#1b1b1f';
-    ctx.font="700 13px 'Zen Kaku Gothic New',sans-serif";
-    ctx.fillText('就活偏差値', W/2, 10);
-    ctx.fillStyle='#c73e2d';
-    ctx.font="700 30px 'Yuji Syuku',serif";
-    ctx.fillText(dev, W/2, 24);
-    // 進捗(墨のバー)
-    const bw = Math.min(W*0.5, 220);
-    ctx.strokeStyle='rgba(27,27,31,.4)'; ctx.lineWidth=1.5;
-    ctx.strokeRect(W/2-bw/2, 62, bw, 7);
-    ctx.fillStyle='#1b1b1f';
-    ctx.fillRect(W/2-bw/2, 62, bw*Math.min(1, stageKills/st.need), 7);
-    ctx.restore();
-    // 登場演出バナー
+    pxText('就活偏差値', W/2, 20, 12, C.gray);
+    pxText(String(dev), W/2, 44, 30, C.gold);
+    // 撃墜進捗(セグメント式)
+    const segW=PX*3, gap=PX, total=st.need;
+    const bw = total*segW + (total-1)*gap;
+    const bx = W/2 - bw/2;
+    for(let i=0;i<total;i++){
+      pr(bx+i*(segW+gap), 64, segW, PX*2, i<stageKills ? C.red : C.dim);
+    }
+    // 登場バナー
     if(introT>0){
       const a = Math.min(1, introT/0.4, (2.4-introT)/0.3+0.01);
       ctx.save();
       ctx.globalAlpha = Math.max(0, Math.min(1,a));
-      ctx.fillStyle='rgba(27,27,31,.82)';
-      ctx.fillRect(0, H*0.34, W, 110);
+      pr(0,H*0.34,W,110,C.ink);
+      pr(0,H*0.34,W,PX,C.red);
+      pr(0,H*0.34+110-PX,W,PX,C.red);
+      const label = stageIdx < STAGES.length ? `第${stageIdx+1}回戦 ─ 就活偏差値 ${dev}` : `延長戦 ─ 就活偏差値 ${dev}`;
+      pxText(stageIdx < STAGES.length ? label : '無い内定地獄・'+label, W/2, H*0.34+34, 14, C.gold);
+      pxText(st.name, W/2, H*0.34+74, 20, C.paper);
+      ctx.restore();
+    }
+  }
+
+  function drawMail(m){
+    const laneW = W/LANES;
+    const S = Math.max(2, Math.floor(Math.min(laneW-20,124)/26));
+    const w=26*S, h=18*S;
+    const x=Math.round((laneX(m.lane)-w/2)/S)*S;
+    const y=Math.round((m.y-h/2)/S)*S;
+    ctx.save();
+    if(m.ghost) ctx.globalAlpha = 0.25 + 0.55*Math.abs(Math.sin(elapsed*2.5+m.ph));
+    // 封筒本体
+    pr(x,y,w,h,C.ink);
+    pr(x+S,y+S,w-2*S,h-2*S, m.gold?C.gold:C.paper);
+    pr(x+S,y+h-2*S,w-2*S,S, m.gold?C.goldSh:C.gray);
+    // フラップ(階段状の斜線)
+    for(let i=0;i<12;i++){
+      const fy = y + S + Math.floor(i*0.62)*S;
+      pr(x+S+i*S, fy, S, S, C.ink);
+      pr(x+w-2*S-i*S, fy, S, S, C.ink);
+    }
+    if(m.gold){
+      ctx.font = (5*S)+"px 'DotGothic16',monospace";
       ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.fillStyle='#c9a227';
-      ctx.font="700 16px 'Zen Kaku Gothic New',sans-serif";
-      const label = stageIdx < STAGES.length ? `第${stageIdx+1}回戦` : '無い内定地獄・延長戦';
-      ctx.fillText(`${label} ─ 就活偏差値 ${dev}`, W/2, H*0.34+34);
-      ctx.fillStyle='#f3ecdd';
-      ctx.font="700 24px 'Yuji Syuku',serif";
-      ctx.fillText(st.name, W/2, H*0.34+74);
+      ctx.fillStyle=C.ink;
+      ctx.fillText('内定', x+w/2, y+h*0.68);
+    } else {
+      // 宛名行
+      pr(x+3*S, y+11*S, 9*S, S, C.gray);
+      pr(x+3*S, y+13*S, 7*S, S, C.gray);
+      pr(x+3*S, y+15*S, 8*S, S, C.gray);
+      // 朱印「祈」
+      const hs=6*S, hx=x+w-hs-2*S, hyv=y+h-hs-2*S;
+      pr(hx,hyv,hs,hs,C.red);
+      pr(hx+S,hyv+S,hs-2*S,hs-2*S,C.redDark);
+      ctx.font = (4*S)+"px 'DotGothic16',monospace";
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillStyle=C.paper;
+      ctx.fillText('祈', hx+hs/2, hyv+hs/2+S*0.3);
+    }
+    ctx.restore();
+  }
+
+  function drawPads(){
+    const laneW = W/LANES;
+    const py = hitY()+48, ph = H-py-10;
+    for(let i=0;i<LANES;i++){
+      const px_ = i*laneW + PX*3;
+      const pw = laneW - PX*6;
+      // 台座
+      pr(px_, py, pw, ph, C.ink);
+      pr(px_+PX, py+PX, pw-2*PX, ph-2*PX, C.tatamiD);
+      // 発光
+      if(padFlash[i]>0){
+        ctx.save();
+        ctx.globalAlpha = padFlash[i]*0.55;
+        pr(px_+PX, py+PX, pw-2*PX, ph-2*PX, C.paper);
+        ctx.restore();
+      }
+      // ラベル「突」
+      ctx.save();
+      ctx.globalAlpha = 0.5;
+      pxText('突', i*laneW+laneW/2, py+ph*0.72, 18, C.gray);
       ctx.restore();
     }
   }
 
   function drawFists(){
+    const S = Math.max(2, Math.floor(W/(LANES*30)));
+    const fw=12*S, fh=9*S;
     for(let i=0;i<LANES;i++){
-      const p=fists[i];
       const x=laneX(i);
-      const rest=H-56, up=hitY()+10;
-      const y = rest + (up-rest)*easeOut(p);
-      ctx.save();
-      ctx.translate(x,y);
-      ctx.font='44px serif';
-      ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.rotate(-Math.PI/2);
-      ctx.fillText('👊',0,0);
-      ctx.restore();
-      // gi sleeve
-      ctx.fillStyle='#fdfaf2';
-      ctx.strokeStyle='#1b1b1f'; ctx.lineWidth=2;
-      ctx.beginPath();
-      ctx.roundRect(x-16,y+22,32,H-(y+22)+10,6);
-      ctx.fill(); ctx.stroke();
-      ctx.strokeStyle='#c73e2d'; ctx.lineWidth=4;
-      ctx.beginPath(); ctx.moveTo(x-16,y+34); ctx.lineTo(x+16,y+34); ctx.stroke();
+      const rest=H-70, up=hitY()+6;
+      // 左拳・右拳(交互に突く)
+      [[fists[i], -7*S], [fists2[i], 7*S]].forEach(([p,dx])=>{
+        const y = rest + (up-rest)*easeOut(p);
+        const fx=Math.round((x+dx-fw/2)/S)*S, fy=Math.round(y/S)*S;
+        drawSprite(FIST, fx, fy, S, FIST_PAL);
+        // 道着の袖
+        const sw=10*S;
+        const sx=Math.round((x+dx-sw/2)/S)*S;
+        pr(sx, fy+fh, sw, H-(fy+fh), C.ink);
+        pr(sx+S, fy+fh, sw-2*S, H-(fy+fh), C.paper);
+        pr(sx+S, fy+fh+2*S, sw-2*S, 2*S, C.red);
+      });
     }
   }
   function easeOut(t){ return 1-Math.pow(1-t,3); }
 
   function drawParts(dt){
     for(const p of parts){
-      p.t+=dt; p.x+=p.vx*dt; p.y+=p.vy*dt; p.vy+=900*dt; p.r+=p.vr*dt;
-      ctx.save();
-      ctx.translate(p.x,p.y); ctx.rotate(p.r);
-      ctx.globalAlpha=Math.max(0,1-p.t/1.1);
-      ctx.fillStyle=p.gold?'#e8c95a':'#ffffff';
-      ctx.strokeStyle='rgba(27,27,31,.4)'; ctx.lineWidth=1;
-      ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
-      ctx.strokeRect(-p.w/2,-p.h/2,p.w,p.h);
-      ctx.restore();
+      p.t+=dt; p.x+=p.vx*dt; p.y+=p.vy*dt; p.vy+=900*dt;
+      if(p.t<1.0){
+        const c = p.gold ? (p.t<.5?C.gold:C.goldSh) : (p.t<.5?C.paper:C.gray);
+        pr(Math.round(p.x/PX)*PX, Math.round(p.y/PX)*PX, p.s, p.s, c);
+      }
     }
-    for(let i=parts.length-1;i>=0;i--) if(parts[i].t>1.1) parts.splice(i,1);
+    for(let i=parts.length-1;i>=0;i--) if(parts[i].t>1.0) parts.splice(i,1);
   }
 
   function drawTexts(dt){
     for(const t of texts){
       t.t+=dt;
-      const a=Math.max(0,1-t.t/0.9);
-      ctx.save();
-      ctx.globalAlpha=a;
-      ctx.fillStyle=t.color;
-      ctx.font=`700 ${t.size}px 'Yuji Syuku',serif`;
-      ctx.textAlign='center'; ctx.textBaseline='middle';
-      ctx.fillText(t.str, t.x, t.y - t.t*40);
-      ctx.restore();
+      if(t.t<0.9){
+        ctx.save();
+        ctx.globalAlpha=Math.max(0,1-t.t/0.9);
+        pxText(t.str, t.x, t.y - Math.floor(t.t*40/PX)*PX, t.size, t.color);
+        ctx.restore();
+      }
     }
     for(let i=texts.length-1;i>=0;i--) if(texts[i].t>0.9) texts.splice(i,1);
   }
@@ -510,7 +849,6 @@
     const dt=Math.min((ts-tPrev)/1000,0.05); tPrev=ts;
     elapsed+=dt;
 
-    // spawn — ステージ設定に従う(登場演出中は停止)
     if(introT>0){ introT-=dt; }
     else {
       spawnTimer-=dt;
@@ -521,16 +859,15 @@
       }
     }
 
-    // update mails
     for(const m of mails){
       if(m.dead) continue;
       m.y += m.speed * (m.vary ? (1+0.45*Math.sin(elapsed*5+m.ph)) : 1) * dt;
       if(m.y > H+50){
         m.dead=true;
         if(m.gold){
-          score+=500; sGold();
-          if(hearts<5){ hearts++; addText(laneX(m.lane),H*0.55,'内定受領 ❤️+1','#c9a227',24); }
-          else addText(laneX(m.lane),H*0.55,'内定受領 +500','#c9a227',24);
+          score+=500; naitei++; sGold();
+          if(hearts<5){ hearts++; addText(laneX(m.lane),H*0.55,'内定'+naitei+'社目! ♥+1',C.gold,20); }
+          else addText(laneX(m.lane),H*0.55,'内定'+naitei+'社目! +500',C.gold,20);
           updateHUD();
         } else {
           loseHeart('撃ち漏らし…');
@@ -539,12 +876,13 @@
     }
     for(let i=mails.length-1;i>=0;i--) if(mails[i].dead) mails.splice(i,1);
 
-    for(let i=0;i<LANES;i++) fists[i]=Math.max(0,fists[i]-dt*5);
+    for(let i=0;i<LANES;i++){ fists[i]=Math.max(0,fists[i]-dt*5); fists2[i]=Math.max(0,fists2[i]-dt*5); padFlash[i]=Math.max(0,padFlash[i]-dt*4); }
+    if(hintT>0) hintT-=dt;
 
-    // draw
     ctx.save();
-    if(shake>0){ shake-=dt*40; ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake); }
+    if(shake>0){ shake-=dt*40; ctx.translate(Math.round((Math.random()-.5)*shake),Math.round((Math.random()-.5)*shake)); }
     drawBG();
+    drawPads();
     drawStageHUD();
     for(const m of mails) drawMail(m);
     drawFists();
@@ -556,28 +894,54 @@
   }
 
   // ---------- input ----------
-  stage.addEventListener('pointerdown', e=>{
+  stageEl.addEventListener('pointerdown', e=>{
     if(!running) return;
-    const rect=stage.getBoundingClientRect();
+    const rect=stageEl.getBoundingClientRect();
     const lane=Math.min(LANES-1,Math.max(0,Math.floor((e.clientX-rect.left)/rect.width*LANES)));
+    if(e.pointerType==='mouse'){
+      punch(lane, (e.button===2) ? 1 : 0); // 左クリック=左拳 / 右クリック=右拳
+      return;
+    }
+    // タッチ:下部のパッドゾーンのみ反応(画面上部の誤タップはノーカウント)
+    const y = e.clientY - rect.top;
+    if(y < rect.height*0.62){
+      if(hintT<=0){ addText(W/2, H*0.62, '▼ 下のパッドを叩け!', C.gold, 18); hintT=1.5; }
+      return;
+    }
     punch(lane);
   });
+  stageEl.addEventListener('contextmenu', e=>{ e.preventDefault(); });
   window.addEventListener('keydown', e=>{
     const map={'ArrowLeft':0,'ArrowDown':1,'ArrowRight':2,'d':0,'f':1,'j':2,'D':0,'F':1,'J':2};
     if(map[e.key]!==undefined){ e.preventDefault(); punch(map[e.key]); }
   });
 
+  const muteBtn = document.getElementById('muteBtn');
+  muteBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    bgm.on = !bgm.on;
+    muteBtn.textContent = bgm.on ? '♪ON' : '♪OFF';
+    if(bgm.on && running) bgmStart(); else bgmStop();
+  });
+  muteBtn.addEventListener('pointerdown', e => e.stopPropagation());
+
   function start(){
-    audio(); // unlock on gesture
+    audio();
     reset();
     startOv.classList.add('hidden');
     overOv.classList.add('hidden');
     running=true; tPrev=performance.now();
+    bgmStart();
     requestAnimationFrame(loop);
   }
   document.getElementById('startBtn').addEventListener('click',start);
   document.getElementById('retryBtn').addEventListener('click',start);
 
+  document.body.classList.add(window.matchMedia('(pointer: coarse)').matches ? 'touch' : 'pc');
+
+  if(document.fonts && document.fonts.load){
+    document.fonts.load("16px 'DotGothic16'").then(()=>{ if(!running) drawBG(); });
+  }
   drawBG();
 
   if ('serviceWorker' in navigator && location.protocol === 'https:') {
