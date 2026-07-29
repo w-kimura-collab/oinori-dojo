@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="撃退道場">
+<meta name="theme-color" content="#1b1b1f">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>お祈りメール撃退道場 〜正拳突きの型〜</title>
+<link href="https://fonts.googleapis.com/css2?family=Yuji+Syuku&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sumi:#1b1b1f;
+    --washi:#f3ecdd;
+    --shu:#c73e2d;
+    --kin:#c9a227;
+    --ai:#2a4d69;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;overflow:hidden;background:var(--sumi);position:fixed;width:100%;overscroll-behavior:none;}
+  body{
+    font-family:'Zen Kaku Gothic New',sans-serif;
+    color:var(--washi);
+    display:flex;align-items:center;justify-content:center;
+    touch-action:manipulation;
+  }
+  #stage{
+    position:relative;
+    width:min(100vw,520px);
+    height:100dvh;
+    max-height:100dvh;
+    background:var(--washi);
+    overflow:hidden;
+    user-select:none;
+  }
+  canvas{display:block;width:100%;height:100%;}
+
+  /* ---------- HUD ---------- */
+  #hud{
+    position:absolute;top:env(safe-area-inset-top,0px);left:0;right:0;
+    display:flex;justify-content:space-between;align-items:flex-start;
+    padding:10px 14px;pointer-events:none;z-index:5;
+  }
+  #hearts{font-size:22px;letter-spacing:2px;filter:drop-shadow(0 1px 0 rgba(0,0,0,.25));}
+  #scorebox{text-align:right;}
+  #score{
+    font-family:'Yuji Syuku',serif;
+    font-size:28px;line-height:1;color:var(--sumi);
+  }
+  #combo{
+    font-size:12px;font-weight:700;color:var(--shu);
+    min-height:16px;
+  }
+
+  /* ---------- overlays ---------- */
+  .overlay{
+    position:absolute;inset:0;z-index:10;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:24px;
+    background:rgba(27,27,31,.88);
+  }
+  .overlay.hidden{display:none;}
+  h1{
+    font-family:'Yuji Syuku',serif;
+    font-size:clamp(34px,9vw,52px);
+    line-height:1.25;color:var(--washi);
+    writing-mode:horizontal-tb;
+  }
+  h1 .shu{color:var(--shu);}
+  .sub{margin-top:14px;font-size:14px;line-height:1.9;opacity:.9;}
+  .sub b{color:var(--kin);}
+  .rule{
+    margin-top:18px;font-size:13px;line-height:2;
+    border:1px solid rgba(243,236,221,.35);
+    padding:12px 18px;border-radius:4px;
+  }
+  .btn{
+    margin-top:26px;
+    font-family:'Yuji Syuku',serif;
+    font-size:24px;letter-spacing:.2em;
+    color:var(--washi);background:var(--shu);
+    border:none;padding:14px 46px;border-radius:6px;
+    cursor:pointer;
+    box-shadow:0 4px 0 #8f2a1d;
+  }
+  .btn:active{transform:translateY(3px);box-shadow:0 1px 0 #8f2a1d;}
+  #finalstats{
+    margin-top:10px;
+    font-family:'Yuji Syuku',serif;
+    font-size:20px;line-height:2;color:var(--washi);
+  }
+  #rank{
+    display:inline-block;margin-top:8px;
+    font-family:'Yuji Syuku',serif;font-size:42px;color:var(--shu);
+    border:3px solid var(--shu);border-radius:50%;
+    width:86px;height:86px;line-height:80px;
+    transform:rotate(-8deg);
+  }
+  #gtitle{font-family:'Yuji Syuku',serif;font-size:clamp(38px,10vw,56px);color:var(--shu);}
+  .hint{margin-top:16px;font-size:11px;opacity:.6;}
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="cv"></canvas>
+
+  <div id="hud">
+    <div id="hearts"></div>
+    <div id="scorebox">
+      <div id="score">0</div>
+      <div id="combo"></div>
+    </div>
+  </div>
+
+  <div id="start" class="overlay">
+    <h1>お祈りメール<br><span class="shu">撃退道場</span></h1>
+    <div class="sub">降りそそぐ祈りを、<b>正拳突き</b>で粉砕せよ。</div>
+    <div class="rule">
+      レーンをタップ(または ← ↓ → / D F J)で突き<br>
+      🟨 <b>金の内定メール</b>は殴らず受け取れ(❤️回復)<br>
+      空振り・撃ち漏らしで ❤️ が減る。ゼロでお祈り。<br>
+      規定数を撃墜すると<b>就活偏差値</b>が上がり、次の企業へ。
+    </div>
+    <button class="btn" id="startBtn">入 門</button>
+    <div class="hint">音が出ます 🔊</div>
+  </div>
+
+  <div id="gameover" class="overlay hidden">
+    <div id="gtitle">今後のご活躍を<br>お祈り申し上げます</div>
+    <div id="finalstats"></div>
+    <div id="rank">段</div>
+    <button class="btn" id="retryBtn">再入門</button>
+  </div>
+</div>
+
+<script>
+(() => {
+  const cv = document.getElementById('cv');
+  const ctx = cv.getContext('2d');
+  const stage = document.getElementById('stage');
+  const heartsEl = document.getElementById('hearts');
+  const scoreEl = document.getElementById('score');
+  const comboEl = document.getElementById('combo');
+  const startOv = document.getElementById('start');
+  const overOv = document.getElementById('gameover');
+  const statsEl = document.getElementById('finalstats');
+  const rankEl = document.getElementById('rank');
+
+  let W = 0, H = 0, DPR = 1;
+  function resize(){
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = stage.clientWidth; H = stage.clientHeight;
+    cv.width = W * DPR; cv.height = H * DPR;
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // ---------- audio ----------
+  let ac = null;
+  function audio(){ if(!ac) ac = new (window.AudioContext||window.webkitAudioContext)(); return ac; }
+  function sPunch(perfect){
+    try{
+      const a = audio(), t = a.currentTime;
+      const o = a.createOscillator(), g = a.createGain();
+      o.type='square'; o.frequency.setValueAtTime(perfect?220:160,t);
+      o.frequency.exponentialRampToValueAtTime(50,t+.12);
+      g.gain.setValueAtTime(.25,t); g.gain.exponentialRampToValueAtTime(.001,t+.15);
+      o.connect(g).connect(a.destination); o.start(t); o.stop(t+.16);
+      // paper shred noise
+      const buf = a.createBuffer(1, a.sampleRate*.1, a.sampleRate);
+      const d = buf.getChannelData(0);
+      for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*(1-i/d.length);
+      const n = a.createBufferSource(); n.buffer=buf;
+      const ng = a.createGain(); ng.gain.value=.15;
+      n.connect(ng).connect(a.destination); n.start(t);
+    }catch(e){}
+  }
+  function sWhiff(){
+    try{
+      const a = audio(), t = a.currentTime;
+      const o=a.createOscillator(), g=a.createGain();
+      o.type='sine'; o.frequency.setValueAtTime(700,t);
+      o.frequency.exponentialRampToValueAtTime(180,t+.2);
+      g.gain.setValueAtTime(.12,t); g.gain.exponentialRampToValueAtTime(.001,t+.22);
+      o.connect(g).connect(a.destination); o.start(t); o.stop(t+.25);
+    }catch(e){}
+  }
+  function sGold(){
+    try{
+      const a=audio(), t=a.currentTime;
+      [523,659,784,1047].forEach((f,i)=>{
+        const o=a.createOscillator(), g=a.createGain();
+        o.type='triangle'; o.frequency.value=f;
+        g.gain.setValueAtTime(0,t+i*.07);
+        g.gain.linearRampToValueAtTime(.12,t+i*.07+.02);
+        g.gain.exponentialRampToValueAtTime(.001,t+i*.07+.3);
+        o.connect(g).connect(a.destination); o.start(t+i*.07); o.stop(t+i*.07+.32);
+      });
+    }catch(e){}
+  }
+  function sDamage(){
+    try{
+      const a=audio(), t=a.currentTime;
+      const o=a.createOscillator(), g=a.createGain();
+      o.type='sawtooth'; o.frequency.setValueAtTime(140,t);
+      o.frequency.linearRampToValueAtTime(80,t+.3);
+      g.gain.setValueAtTime(.18,t); g.gain.exponentialRampToValueAtTime(.001,t+.35);
+      o.connect(g).connect(a.destination); o.start(t); o.stop(t+.36);
+    }catch(e){}
+  }
+
+  // ---------- game state ----------
+  const LANES = 3;
+  const SNIPPETS = ['誠に残念ながら','慎重に選考した結果','ご期待に沿えず','今後のご活躍を','貴意に添いかねる','厳正なる選考の末'];
+  // 就活偏差値ステージ(企業名はすべて架空です)
+  const STAGES = [
+    {dev:45, name:'まちの実業(中小)',        need:8,  spd:0.85, iv:1.70, gold:.15},
+    {dev:52, name:'ニチジョー物産(中堅商社)', need:10, spd:1.00, iv:1.45, gold:.13},
+    {dev:58, name:'メガベンチャー ラクテレ',   need:12, spd:1.15, iv:1.25, gold:.12},
+    {dev:63, name:'日ノ本電機(大手メーカー)', need:14, spd:1.30, iv:1.05, gold:.10, ghost:true},
+    {dev:68, name:'外資コンサル マッキンレー',  need:16, spd:1.45, iv:0.90, gold:.09, ghost:true, vary:true},
+    {dev:73, name:'三ツ星商事(五大商社)',     need:18, spd:1.60, iv:0.78, gold:.08, ghost:true, vary:true},
+    {dev:78, name:'外銀 ゴールドマン・サシミ', need:22, spd:1.80, iv:0.66, gold:.07, ghost:true, vary:true},
+  ];
+  function curStage(){ return STAGES[Math.min(stageIdx, STAGES.length-1)]; }
+  function endlessBoost(){ return stageIdx >= STAGES.length ? 1 + (stageIdx-STAGES.length+1)*0.12 : 1; }
+  let mails, parts, texts, fists, score, combo, maxCombo, hearts, punched;
+  let stageIdx, stageKills, introT;
+  let running=false, tPrev=0, spawnTimer=0, elapsed=0, shake=0;
+
+  function laneX(i){ return W/LANES*(i+0.5); }
+  function hitY(){ return H - 150; }
+
+  function reset(){
+    mails=[]; parts=[]; texts=[]; fists=[0,0,0];
+    score=0; combo=0; maxCombo=0; hearts=5; punched=0;
+    spawnTimer=0; elapsed=0; shake=0;
+    stageIdx=0; stageKills=0; introT=2.4;
+    updateHUD();
+  }
+
+  function updateHUD(){
+    heartsEl.textContent = '❤️'.repeat(hearts) + '🖤'.repeat(Math.max(0,5-hearts));
+    scoreEl.textContent = score;
+    comboEl.textContent = combo>=2 ? combo+' 連撃' : '';
+  }
+
+  function spawn(){
+    const st = curStage(), boost = endlessBoost();
+    const lane = Math.floor(Math.random()*LANES);
+    const gold = Math.random() < st.gold;
+    const ramp = 1 + (stageKills/st.need)*0.25; // ステージ内でも徐々に加速
+    const speed = (150 + Math.random()*40) * st.spd * ramp * boost * (H/700);
+    mails.push({
+      lane, y:-60, speed, gold,
+      snippet:SNIPPETS[Math.floor(Math.random()*SNIPPETS.length)],
+      dead:false,
+      ghost: !gold && st.ghost && Math.random()<0.35,   // サイレントお祈り(薄れて見えにくい)
+      vary:  !gold && st.vary  && Math.random()<0.35,   // フェイント(速度が揺れる)
+      ph: Math.random()*Math.PI*2
+    });
+  }
+
+  function stageClear(){
+    // 残ったメールはボーナス粉砕
+    for(const m of mails){ if(!m.dead){ m.dead=true; if(!m.gold){ shred(laneX(m.lane), m.y, false); score+=50; } } }
+    sGold();
+    if(hearts<5){ hearts++; }
+    addText(W/2, H*0.35, '内定辞退!次の企業へ', '#c9a227', 26);
+    stageIdx++; stageKills=0; introT=2.4;
+    updateHUD();
+  }
+
+  function addText(x,y,str,color,size){
+    texts.push({x,y,str,color,size:size||26,t:0});
+  }
+  function shred(x,y,gold){
+    for(let i=0;i<16;i++){
+      parts.push({
+        x,y,
+        vx:(Math.random()-.5)*420,
+        vy:-Math.random()*420-60,
+        r:Math.random()*Math.PI,
+        vr:(Math.random()-.5)*12,
+        w:6+Math.random()*10, h:3+Math.random()*5,
+        t:0, gold
+      });
+    }
+  }
+
+  function loseHeart(reason){
+    hearts--; shake=10; sDamage(); combo=0;
+    addText(W/2, H*0.4, reason, '#c73e2d', 30);
+    updateHUD();
+    if(hearts<=0) gameOver();
+  }
+
+  function punch(lane){
+    if(!running) return;
+    fists[lane]=1;
+    const hy = hitY();
+    let best=null, bd=1e9;
+    for(const m of mails){
+      if(m.dead || m.lane!==lane) continue;
+      const d = Math.abs(m.y - hy);
+      if(d < bd){ bd=d; best=m; }
+    }
+    if(best && bd < 70){
+      if(best.gold){
+        best.dead=true;
+        shred(laneX(lane), best.y, true);
+        loseHeart('内定を殴るな!');
+        return;
+      }
+      best.dead=true; punched++;
+      const perfect = bd < 28;
+      const pts = perfect ? 300 : 100;
+      combo++; maxCombo=Math.max(maxCombo,combo);
+      score += pts + combo*10;
+      stageKills++;
+      if(stageKills >= curStage().need){ updateHUD(); shred(laneX(lane), best.y, false); sPunch(perfect); stageClear(); return; }
+      shred(laneX(lane), best.y, false);
+      addText(laneX(lane), best.y-40, perfect?'一本!':'有効', perfect?'#c73e2d':'#2a4d69', perfect?34:26);
+      sPunch(perfect);
+      updateHUD();
+    } else {
+      sWhiff();
+      loseHeart('空振り!');
+    }
+  }
+
+  function gameOver(){
+    running=false;
+    const mins = elapsed;
+    const reached = stageIdx < STAGES.length ? STAGES[stageIdx].dev : STAGES[STAGES.length-1].dev + (stageIdx-STAGES.length+1)*2;
+    statsEl.innerHTML = `到達 就活偏差値 <span style="color:var(--kin)">${reached}</span><br>撃墜 ${punched} 通 / 最大 ${maxCombo} 連撃<br>得点 ${score}`;
+    let r='入門';
+    if(stageIdx>=7) r='師範'; else if(stageIdx>=5) r='黒帯'; else if(stageIdx>=3) r='茶帯'; else if(stageIdx>=1) r='白帯';
+    rankEl.textContent = r;
+    overOv.classList.remove('hidden');
+  }
+
+  // ---------- drawing ----------
+  function drawBG(){
+    // washi paper
+    ctx.fillStyle='#f3ecdd'; ctx.fillRect(0,0,W,H);
+    // lanes
+    ctx.strokeStyle='rgba(27,27,31,.12)'; ctx.lineWidth=1;
+    for(let i=1;i<LANES;i++){
+      ctx.beginPath(); ctx.moveTo(W/LANES*i,0); ctx.lineTo(W/LANES*i,H); ctx.stroke();
+    }
+    // hit line = tatami edge
+    const hy=hitY();
+    ctx.fillStyle='rgba(42,77,105,.12)';
+    ctx.fillRect(0,hy-34,W,68);
+    ctx.strokeStyle='#2a4d69'; ctx.lineWidth=2;
+    ctx.setLineDash([10,8]);
+    ctx.beginPath(); ctx.moveTo(0,hy); ctx.lineTo(W,hy); ctx.stroke();
+    ctx.setLineDash([]);
+    // dojo floor
+    ctx.fillStyle='#e5dcc6'; ctx.fillRect(0,hy+34,W,H);
+    ctx.strokeStyle='rgba(27,27,31,.1)';
+    for(let y=hy+64;y<H;y+=30){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+  }
+
+  function drawMail(m){
+    const x=laneX(m.lane), y=m.y;
+    const w=Math.min(W/LANES-24,130), h=w*0.62;
+    ctx.save(); ctx.translate(x,y);
+    if(m.ghost) ctx.globalAlpha = 0.25 + 0.55*Math.abs(Math.sin(elapsed*2.5+m.ph));
+    // envelope
+    ctx.fillStyle = m.gold ? '#f5d97a' : '#ffffff';
+    ctx.strokeStyle = m.gold ? '#c9a227' : '#1b1b1f';
+    ctx.lineWidth=2;
+    ctx.beginPath();
+    ctx.roundRect(-w/2,-h/2,w,h,4);
+    ctx.fill(); ctx.stroke();
+    // flap
+    ctx.beginPath();
+    ctx.moveTo(-w/2,-h/2); ctx.lineTo(0,4); ctx.lineTo(w/2,-h/2);
+    ctx.stroke();
+    if(m.gold){
+      ctx.fillStyle='#8a6d1a';
+      ctx.font=`700 ${Math.round(w*0.2)}px 'Yuji Syuku',serif`;
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText('内 定', 0, h*0.18);
+    } else {
+      // red hanko 祈
+      ctx.save();
+      ctx.translate(w*0.28,h*0.1); ctx.rotate(-0.15);
+      ctx.strokeStyle='#c73e2d'; ctx.lineWidth=2;
+      ctx.strokeRect(-13,-13,26,26);
+      ctx.fillStyle='#c73e2d';
+      ctx.font=`700 18px 'Yuji Syuku',serif`;
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText('祈',0,1);
+      ctx.restore();
+      ctx.fillStyle='#555';
+      ctx.font=`500 ${Math.max(9,Math.round(w*0.085))}px 'Zen Kaku Gothic New',sans-serif`;
+      ctx.textAlign='left'; ctx.textBaseline='middle';
+      ctx.fillText(m.snippet, -w/2+8, h*0.14);
+      ctx.fillStyle='rgba(85,85,85,.5)';
+      ctx.fillRect(-w/2+8, h*0.26, w*0.6, 2);
+      ctx.fillRect(-w/2+8, h*0.34, w*0.45, 2);
+    }
+    ctx.restore();
+  }
+
+  function drawStageHUD(){
+    const st = curStage();
+    const dev = stageIdx < STAGES.length ? st.dev : st.dev + (stageIdx-STAGES.length+1)*2;
+    // 上部中央:現在ステージ
+    ctx.save();
+    ctx.textAlign='center'; ctx.textBaseline='top';
+    ctx.fillStyle='#1b1b1f';
+    ctx.font="700 13px 'Zen Kaku Gothic New',sans-serif";
+    ctx.fillText('就活偏差値', W/2, 10);
+    ctx.fillStyle='#c73e2d';
+    ctx.font="700 30px 'Yuji Syuku',serif";
+    ctx.fillText(dev, W/2, 24);
+    // 進捗(墨のバー)
+    const bw = Math.min(W*0.5, 220);
+    ctx.strokeStyle='rgba(27,27,31,.4)'; ctx.lineWidth=1.5;
+    ctx.strokeRect(W/2-bw/2, 62, bw, 7);
+    ctx.fillStyle='#1b1b1f';
+    ctx.fillRect(W/2-bw/2, 62, bw*Math.min(1, stageKills/st.need), 7);
+    ctx.restore();
+    // 登場演出バナー
+    if(introT>0){
+      const a = Math.min(1, introT/0.4, (2.4-introT)/0.3+0.01);
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, Math.min(1,a));
+      ctx.fillStyle='rgba(27,27,31,.82)';
+      ctx.fillRect(0, H*0.34, W, 110);
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillStyle='#c9a227';
+      ctx.font="700 16px 'Zen Kaku Gothic New',sans-serif";
+      const label = stageIdx < STAGES.length ? `第${stageIdx+1}回戦` : '無い内定地獄・延長戦';
+      ctx.fillText(`${label} ─ 就活偏差値 ${dev}`, W/2, H*0.34+34);
+      ctx.fillStyle='#f3ecdd';
+      ctx.font="700 24px 'Yuji Syuku',serif";
+      ctx.fillText(st.name, W/2, H*0.34+74);
+      ctx.restore();
+    }
+  }
+
+  function drawFists(){
+    for(let i=0;i<LANES;i++){
+      const p=fists[i];
+      const x=laneX(i);
+      const rest=H-56, up=hitY()+10;
+      const y = rest + (up-rest)*easeOut(p);
+      ctx.save();
+      ctx.translate(x,y);
+      ctx.font='44px serif';
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.rotate(-Math.PI/2);
+      ctx.fillText('👊',0,0);
+      ctx.restore();
+      // gi sleeve
+      ctx.fillStyle='#fdfaf2';
+      ctx.strokeStyle='#1b1b1f'; ctx.lineWidth=2;
+      ctx.beginPath();
+      ctx.roundRect(x-16,y+22,32,H-(y+22)+10,6);
+      ctx.fill(); ctx.stroke();
+      ctx.strokeStyle='#c73e2d'; ctx.lineWidth=4;
+      ctx.beginPath(); ctx.moveTo(x-16,y+34); ctx.lineTo(x+16,y+34); ctx.stroke();
+    }
+  }
+  function easeOut(t){ return 1-Math.pow(1-t,3); }
+
+  function drawParts(dt){
+    for(const p of parts){
+      p.t+=dt; p.x+=p.vx*dt; p.y+=p.vy*dt; p.vy+=900*dt; p.r+=p.vr*dt;
+      ctx.save();
+      ctx.translate(p.x,p.y); ctx.rotate(p.r);
+      ctx.globalAlpha=Math.max(0,1-p.t/1.1);
+      ctx.fillStyle=p.gold?'#e8c95a':'#ffffff';
+      ctx.strokeStyle='rgba(27,27,31,.4)'; ctx.lineWidth=1;
+      ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+      ctx.strokeRect(-p.w/2,-p.h/2,p.w,p.h);
+      ctx.restore();
+    }
+    for(let i=parts.length-1;i>=0;i--) if(parts[i].t>1.1) parts.splice(i,1);
+  }
+
+  function drawTexts(dt){
+    for(const t of texts){
+      t.t+=dt;
+      const a=Math.max(0,1-t.t/0.9);
+      ctx.save();
+      ctx.globalAlpha=a;
+      ctx.fillStyle=t.color;
+      ctx.font=`700 ${t.size}px 'Yuji Syuku',serif`;
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(t.str, t.x, t.y - t.t*40);
+      ctx.restore();
+    }
+    for(let i=texts.length-1;i>=0;i--) if(texts[i].t>0.9) texts.splice(i,1);
+  }
+
+  // ---------- main loop ----------
+  function loop(ts){
+    if(!running) return;
+    const dt=Math.min((ts-tPrev)/1000,0.05); tPrev=ts;
+    elapsed+=dt;
+
+    // spawn — ステージ設定に従う(登場演出中は停止)
+    if(introT>0){ introT-=dt; }
+    else {
+      spawnTimer-=dt;
+      if(spawnTimer<=0){
+        spawn();
+        const iv = curStage().iv / endlessBoost();
+        spawnTimer = iv*(0.7+Math.random()*0.6);
+      }
+    }
+
+    // update mails
+    for(const m of mails){
+      if(m.dead) continue;
+      m.y += m.speed * (m.vary ? (1+0.45*Math.sin(elapsed*5+m.ph)) : 1) * dt;
+      if(m.y > H+50){
+        m.dead=true;
+        if(m.gold){
+          score+=500; sGold();
+          if(hearts<5){ hearts++; addText(laneX(m.lane),H*0.55,'内定受領 ❤️+1','#c9a227',24); }
+          else addText(laneX(m.lane),H*0.55,'内定受領 +500','#c9a227',24);
+          updateHUD();
+        } else {
+          loseHeart('撃ち漏らし…');
+        }
+      }
+    }
+    for(let i=mails.length-1;i>=0;i--) if(mails[i].dead) mails.splice(i,1);
+
+    for(let i=0;i<LANES;i++) fists[i]=Math.max(0,fists[i]-dt*5);
+
+    // draw
+    ctx.save();
+    if(shake>0){ shake-=dt*40; ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake); }
+    drawBG();
+    drawStageHUD();
+    for(const m of mails) drawMail(m);
+    drawFists();
+    drawParts(dt);
+    drawTexts(dt);
+    ctx.restore();
+
+    requestAnimationFrame(loop);
+  }
+
+  // ---------- input ----------
+  stage.addEventListener('pointerdown', e=>{
+    if(!running) return;
+    const rect=stage.getBoundingClientRect();
+    const lane=Math.min(LANES-1,Math.max(0,Math.floor((e.clientX-rect.left)/rect.width*LANES)));
+    punch(lane);
+  });
+  window.addEventListener('keydown', e=>{
+    const map={'ArrowLeft':0,'ArrowDown':1,'ArrowRight':2,'d':0,'f':1,'j':2,'D':0,'F':1,'J':2};
+    if(map[e.key]!==undefined){ e.preventDefault(); punch(map[e.key]); }
+  });
+
+  function start(){
+    audio(); // unlock on gesture
+    reset();
+    startOv.classList.add('hidden');
+    overOv.classList.add('hidden');
+    running=true; tPrev=performance.now();
+    requestAnimationFrame(loop);
+  }
+  document.getElementById('startBtn').addEventListener('click',start);
+  document.getElementById('retryBtn').addEventListener('click',start);
+
+  drawBG();
+
+  if ('serviceWorker' in navigator && location.protocol === 'https:') {
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  }
+})();
+</script>
+</body>
+</html>
