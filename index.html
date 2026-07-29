@@ -307,17 +307,17 @@
           <div class="demo-mail">✉</div>
           <div class="demo-line"></div>
           <div class="demo-pads">
-            <span class="demo-pad">突</span><span class="demo-pad on">突<span class="finger">👆</span></span><span class="demo-pad">突</span>
+            <span class="demo-pad">左</span><span class="demo-pad on">右<span class="finger">👆</span></span>
           </div>
         </div>
         <div id="ctrlTouch">
           メールが<b>白い線</b>に重なった瞬間、<br>
-          そのレーンの<b>「突」パッドをタップ!</b><br>
-          両手の親指で連打OK
+          落ちてくる側の<b>左/右パッドをタップ!</b><br>
+          左パッド=左の正拳 右パッド=右の正拳
         </div>
         <div id="ctrlPc">
-          🖱 左クリック=左拳 / 右クリック=右拳<br>
-          ⌨ ← ↓ → または D F J
+          🖱 <b>左クリック=左の正拳</b> / <b>右クリック=右の正拳</b><br>
+          ⌨ ← → または F J
         </div>
         <div class="rule-h">─ ルール ─</div>
         ▶ <b>金の内定メール</b>は殴らず受け取れ ♥回復<br>
@@ -446,49 +446,98 @@
     }catch(e){}
   }
 
-  // ---------- BGM ----------
+  // ---------- BGM(中毒性チップチューン:リード+エコー+ベース+ドラム) ----------
   const bgm = { on:true, playing:false, step:0, next:0, timer:null, gain:null };
-  const IN_SCALE = { A3:220, Bb3:233.08, D4:293.66, E4:329.63, G4:392, A4:440, Bb4:466.16 };
-  const MELODY = [
-    IN_SCALE.A4, null, IN_SCALE.G4, null,
-    IN_SCALE.E4, null, IN_SCALE.D4, IN_SCALE.E4,
-    IN_SCALE.G4, null, IN_SCALE.A4, IN_SCALE.Bb4,
-    IN_SCALE.A4, IN_SCALE.G4, IN_SCALE.E4, null
+  const N = {A2:110,G2:98,C3:130.81,D3:146.83,E3:164.81,
+             C4:261.63,D4:293.66,E4:329.63,G4:392,A4:440,C5:523.25,D5:587.33,E5:659.26};
+  // 32ステップ(8分音符×4小節)のフックメロディ
+  const LEAD = [
+    N.A4,0,N.A4,N.C5, N.A4,0,N.G4,N.E4,
+    N.G4,0,N.G4,N.A4, N.G4,N.E4,N.D4,0,
+    N.A4,0,N.A4,N.C5, N.D5,0,N.C5,N.A4,
+    N.G4,N.A4,N.C5,N.A4, N.G4,N.E4,N.G4,0
   ];
+  // 小節ごとのベースルート(A→G→C→Dで駆け上がるループ)
+  const BASS_ROOTS = [N.A2, N.G2, N.C3, N.D3];
   function bgmBpm(){ return Math.min(176, 116 + stageIdx*7); }
-  function taiko(t,big){
+  let noiseBuf = null;
+  function getNoise(){
+    const a = audio();
+    if(!noiseBuf){
+      noiseBuf = a.createBuffer(1, a.sampleRate*0.2, a.sampleRate);
+      const d = noiseBuf.getChannelData(0);
+      for(let i=0;i<d.length;i++) d[i] = Math.random()*2-1;
+    }
+    return noiseBuf;
+  }
+  function kick(t,big){
     const a=audio();
     const o=a.createOscillator(), g=a.createGain();
     o.type='sine';
-    o.frequency.setValueAtTime(big?110:90,t);
-    o.frequency.exponentialRampToValueAtTime(40,t+.18);
-    g.gain.setValueAtTime(big?.5:.3,t);
-    g.gain.exponentialRampToValueAtTime(.001,t+.2);
-    o.connect(g).connect(bgm.gain); o.start(t); o.stop(t+.22);
+    o.frequency.setValueAtTime(big?120:100,t);
+    o.frequency.exponentialRampToValueAtTime(38,t+.14);
+    g.gain.setValueAtTime(big?.55:.38,t);
+    g.gain.exponentialRampToValueAtTime(.001,t+.16);
+    o.connect(g).connect(bgm.gain); o.start(t); o.stop(t+.18);
   }
-  function pluck(t,f){
+  function hat(t,acc){
+    const a=audio();
+    const n=a.createBufferSource(); n.buffer=getNoise();
+    const f=a.createBiquadFilter(); f.type='highpass'; f.frequency.value=7000;
+    const g=a.createGain();
+    g.gain.setValueAtTime(acc?.07:.035,t);
+    g.gain.exponentialRampToValueAtTime(.001,t+.04);
+    n.connect(f).connect(g).connect(bgm.gain); n.start(t); n.stop(t+.05);
+  }
+  function snare(t){
+    const a=audio();
+    const n=a.createBufferSource(); n.buffer=getNoise();
+    const f=a.createBiquadFilter(); f.type='bandpass'; f.frequency.value=1800; f.Q.value=.8;
+    const g=a.createGain();
+    g.gain.setValueAtTime(.16,t);
+    g.gain.exponentialRampToValueAtTime(.001,t+.11);
+    n.connect(f).connect(g).connect(bgm.gain); n.start(t); n.stop(t+.12);
+  }
+  function bass(t,f,dur){
     const a=audio();
     const o=a.createOscillator(), g=a.createGain();
-    o.type='square'; o.frequency.value=f;
-    g.gain.setValueAtTime(.11,t);
-    g.gain.exponentialRampToValueAtTime(.001,t+.26);
-    o.connect(g).connect(bgm.gain); o.start(t); o.stop(t+.28);
-    const o2=a.createOscillator(), g2=a.createGain();
-    o2.type='triangle'; o2.frequency.value=f;
-    g2.gain.setValueAtTime(.14,t);
-    g2.gain.exponentialRampToValueAtTime(.001,t+.3);
-    o2.connect(g2).connect(bgm.gain); o2.start(t); o2.stop(t+.32);
+    o.type='triangle'; o.frequency.value=f;
+    g.gain.setValueAtTime(.22,t);
+    g.gain.setValueAtTime(.22,t+dur*.6);
+    g.gain.exponentialRampToValueAtTime(.001,t+dur*.95);
+    o.connect(g).connect(bgm.gain); o.start(t); o.stop(t+dur);
+  }
+  function lead(t,f,vol){
+    const a=audio();
+    // デチューン2オシで太いリード
+    [[f,'square',vol],[f*1.004,'square',vol*.6]].forEach(([ff,ty,vv])=>{
+      const o=a.createOscillator(), g=a.createGain();
+      o.type=ty; o.frequency.value=ff;
+      g.gain.setValueAtTime(vv,t);
+      g.gain.exponentialRampToValueAtTime(.001,t+.22);
+      o.connect(g).connect(bgm.gain); o.start(t); o.stop(t+.24);
+    });
   }
   function bgmSchedule(){
     if(!bgm.playing) return;
     const a=audio();
-    const spb = 60/bgmBpm()/2;
+    const spb = 60/bgmBpm()/2; // 8分音符
     while(bgm.next < a.currentTime + 0.15){
-      const s = bgm.step % 16;
-      if(s%4===0) taiko(bgm.next, s===0);
-      if(stageIdx>=3 && s===14) taiko(bgm.next,false);
-      const n = MELODY[s];
-      if(n) pluck(bgm.next,n);
+      const s = bgm.step % 32;
+      const bar = (s/8)|0, idx = s%8;
+      // ドラム
+      if(idx===0) kick(bgm.next, true);
+      if(idx===4) snare(bgm.next);
+      if(stageIdx>=3 && idx===6) kick(bgm.next, false); // 高偏差値でシンコペ追加
+      hat(bgm.next, idx%2===1);
+      // ベース(オクターブ跳ねで疾走感)
+      bass(bgm.next, BASS_ROOTS[bar]*(idx%2?2:1), spb);
+      // リード+エコー
+      const f = LEAD[s];
+      if(f){
+        lead(bgm.next, f, .10);
+        lead(bgm.next + spb*.5, f, .035); // 半拍遅れの残響エコー
+      }
       bgm.next += spb;
       bgm.step++;
     }
@@ -497,7 +546,7 @@
   function bgmStart(){
     if(!bgm.on || bgm.playing) return;
     const a=audio();
-    if(!bgm.gain){ bgm.gain=a.createGain(); bgm.gain.gain.value=0.28; bgm.gain.connect(a.destination); }
+    if(!bgm.gain){ bgm.gain=a.createGain(); bgm.gain.gain.value=0.30; bgm.gain.connect(a.destination); }
     bgm.playing=true; bgm.step=0; bgm.next=a.currentTime+0.05;
     bgmSchedule();
   }
@@ -507,7 +556,7 @@
   }
 
   // ---------- game state ----------
-  const LANES = 3;
+  const LANES = 2;
   const SNIPPETS = ['誠に残念ながら','慎重に選考した結果','ご期待に沿えず','今後のご活躍を','貴意に添いかねる','厳正なる選考の末'];
   // 就活偏差値ステージ(企業名はすべて架空です)
   const STAGES = [
@@ -522,20 +571,20 @@
   function curStage(){ return STAGES[Math.min(stageIdx, STAGES.length-1)]; }
   function endlessBoost(){ return stageIdx >= STAGES.length ? 1 + (stageIdx-STAGES.length+1)*0.12 : 1; }
 
-  let mails, parts, texts, fists, fists2, fistSide, score, combo, maxCombo, hearts, punched, naitei;
+  let mails, parts, texts, fists, score, combo, maxCombo, hearts, punched, naitei;
   let stageIdx, stageKills, introT;
   let running=false, tPrev=0, spawnTimer=0, elapsed=0, shake=0;
-  let padFlash=[0,0,0], hintT=0;
+  let padFlash=[0,0], hintT=0;
 
   function laneX(i){ return W/LANES*(i+0.5); }
   function hitY(){ return H - 150; }
 
   function reset(){
-    mails=[]; parts=[]; texts=[]; fists=[0,0,0]; fists2=[0,0,0]; fistSide=[0,1,0];
+    mails=[]; parts=[]; texts=[]; fists=[0,0];
     score=0; combo=0; maxCombo=0; hearts=5; punched=0; naitei=0;
     spawnTimer=0; elapsed=0; shake=0;
     stageIdx=0; stageKills=0; introT=2.4;
-    padFlash=[0,0,0]; hintT=0;
+    padFlash=[0,0]; hintT=0;
     updateHUD();
   }
 
@@ -595,11 +644,9 @@
     if(hearts<=0) gameOver();
   }
 
-  function punch(lane, side){
+  function punch(lane){
     if(!running) return;
-    const s = (side===undefined) ? fistSide[lane] : side;
-    if(s===0){ fists[lane]=1; } else { fists2[lane]=1; }
-    fistSide[lane] = s===0 ? 1 : 0;
+    fists[lane]=1;
     padFlash[lane]=1;
     if(navigator.vibrate) navigator.vibrate(12);
     const hy = hitY();
@@ -792,29 +839,27 @@
       // ラベル「突」
       ctx.save();
       ctx.globalAlpha = 0.5;
-      pxText('突', i*laneW+laneW/2, py+ph*0.72, 18, C.gray);
+      pxText(i===0?'左':'右', i*laneW+laneW/2, py+ph*0.72, 18, C.gray);
       ctx.restore();
     }
   }
 
   function drawFists(){
-    const S = Math.max(2, Math.floor(W/(LANES*30)));
+    const S = Math.max(3, Math.floor(W/(LANES*26)));
     const fw=12*S, fh=9*S;
     for(let i=0;i<LANES;i++){
       const x=laneX(i);
+      const p=fists[i];
       const rest=H-70, up=hitY()+6;
-      // 左拳・右拳(交互に突く)
-      [[fists[i], -7*S], [fists2[i], 7*S]].forEach(([p,dx])=>{
-        const y = rest + (up-rest)*easeOut(p);
-        const fx=Math.round((x+dx-fw/2)/S)*S, fy=Math.round(y/S)*S;
-        drawSprite(FIST, fx, fy, S, FIST_PAL);
-        // 道着の袖
-        const sw=10*S;
-        const sx=Math.round((x+dx-sw/2)/S)*S;
-        pr(sx, fy+fh, sw, H-(fy+fh), C.ink);
-        pr(sx+S, fy+fh, sw-2*S, H-(fy+fh), C.paper);
-        pr(sx+S, fy+fh+2*S, sw-2*S, 2*S, C.red);
-      });
+      const y = rest + (up-rest)*easeOut(p);
+      const fx=Math.round((x-fw/2)/S)*S, fy=Math.round(y/S)*S;
+      drawSprite(FIST, fx, fy, S, FIST_PAL);
+      // 道着の袖
+      const sw=10*S;
+      const sx=Math.round((x-sw/2)/S)*S;
+      pr(sx, fy+fh, sw, H-(fy+fh), C.ink);
+      pr(sx+S, fy+fh, sw-2*S, H-(fy+fh), C.paper);
+      pr(sx+S, fy+fh+2*S, sw-2*S, 2*S, C.red);
     }
   }
   function easeOut(t){ return 1-Math.pow(1-t,3); }
@@ -876,7 +921,7 @@
     }
     for(let i=mails.length-1;i>=0;i--) if(mails[i].dead) mails.splice(i,1);
 
-    for(let i=0;i<LANES;i++){ fists[i]=Math.max(0,fists[i]-dt*5); fists2[i]=Math.max(0,fists2[i]-dt*5); padFlash[i]=Math.max(0,padFlash[i]-dt*4); }
+    for(let i=0;i<LANES;i++){ fists[i]=Math.max(0,fists[i]-dt*5); padFlash[i]=Math.max(0,padFlash[i]-dt*4); }
     if(hintT>0) hintT-=dt;
 
     ctx.save();
@@ -897,9 +942,8 @@
   stageEl.addEventListener('pointerdown', e=>{
     if(!running) return;
     const rect=stageEl.getBoundingClientRect();
-    const lane=Math.min(LANES-1,Math.max(0,Math.floor((e.clientX-rect.left)/rect.width*LANES)));
     if(e.pointerType==='mouse'){
-      punch(lane, (e.button===2) ? 1 : 0); // 左クリック=左拳 / 右クリック=右拳
+      punch((e.button===2) ? 1 : 0); // 左クリック=左の正拳 / 右クリック=右の正拳
       return;
     }
     // タッチ:下部のパッドゾーンのみ反応(画面上部の誤タップはノーカウント)
@@ -908,11 +952,11 @@
       if(hintT<=0){ addText(W/2, H*0.62, '▼ 下のパッドを叩け!', C.gold, 18); hintT=1.5; }
       return;
     }
-    punch(lane);
+    punch((e.clientX-rect.left) < rect.width/2 ? 0 : 1);
   });
   stageEl.addEventListener('contextmenu', e=>{ e.preventDefault(); });
   window.addEventListener('keydown', e=>{
-    const map={'ArrowLeft':0,'ArrowDown':1,'ArrowRight':2,'d':0,'f':1,'j':2,'D':0,'F':1,'J':2};
+    const map={'ArrowLeft':0,'ArrowRight':1,'f':0,'j':1,'F':0,'J':1};
     if(map[e.key]!==undefined){ e.preventDefault(); punch(map[e.key]); }
   });
 
