@@ -59,9 +59,18 @@
     text-shadow:2px 2px 0 var(--ink);
   }
   #hearts .off{color:var(--dim);}
+  #mult{
+    font-size:12px;color:var(--gold);
+    text-shadow:1px 1px 0 var(--ink);
+    min-height:15px;
+  }
   #naitei{
     margin-top:6px;
     font-size:14px;color:var(--gold);
+    text-shadow:1px 1px 0 var(--ink);
+  }
+  #ghost{
+    margin-top:4px;font-size:11px;
     text-shadow:1px 1px 0 var(--ink);
   }
   #scorebox{text-align:right;}
@@ -153,6 +162,18 @@
   .cart-screws{position:absolute;bottom:5px;left:0;right:0;display:flex;justify-content:space-between;padding:0 10px;}
   .cart-screws i{width:6px;height:6px;background:#8f877b;border:1px solid var(--ink);border-radius:50%;}
   .startframe{margin-top:18px;}
+  .goal{
+    border:3px solid var(--gold);
+    padding:10px 8px;margin-bottom:12px;
+    font-size:13px;line-height:1.9;color:var(--paper);
+    text-align:center;
+  }
+  .goal b{color:var(--gold);font-size:15px;}
+  #nextGoal{
+    margin-top:14px;font-size:13px;line-height:2;text-align:left;
+    border:2px solid var(--dim);padding:8px 12px;
+  }
+  #nextGoal .ng-h{text-align:center;color:var(--gold);margin-bottom:2px;}
   .frame{
     border:4px solid var(--paper);
     box-shadow:0 0 0 4px var(--ink), 8px 8px 0 4px var(--ink);
@@ -264,11 +285,130 @@
     box-shadow:4px 4px 0 var(--ink);
     transform:rotate(-3deg);
   }
+  #kuyashii{
+    font-size:17px;color:var(--gold);line-height:1.8;
+    margin-bottom:12px;
+    animation:bl .7s steps(2,end) infinite;
+    text-shadow:2px 2px 0 var(--ink);
+  }
   #gtitle{
     font-size:clamp(22px,6vw,30px);line-height:1.7;color:var(--red);
     text-shadow:3px 3px 0 var(--ink);
   }
   .hint{margin-top:14px;font-size:11px;color:var(--dim);}
+  #ultBtn{
+    position:absolute;left:50%;transform:translateX(-50%);
+    bottom:118px;z-index:7;
+    font-family:'DotGothic16',monospace;font-size:16px;
+    color:var(--ink);background:var(--gold);
+    border:3px solid var(--ink);padding:10px 18px;
+    box-shadow:0 0 0 3px var(--gold), 4px 4px 0 3px var(--ink);
+    animation:bl .5s steps(2,end) infinite;
+    cursor:pointer;
+  }
+  #wall,#daily{font-size:12px;margin-top:10px;text-shadow:1px 1px 0 var(--ink);}
+  .dailybtn{background:#b8541e;font-size:16px;margin-top:12px;padding:10px 24px;}
+  .dailynote{margin-top:6px;font-size:10px;color:var(--dim);}
+  #streak{margin-top:12px;font-size:13px;color:var(--gold);text-shadow:1px 1px 0 var(--ink);}
+  #dexLink{
+    margin-top:8px;font-size:13px;color:var(--paper);
+    text-decoration:underline;cursor:pointer;
+  }
+  #dexOv .frame{max-height:80dvh;overflow-y:auto;}
+  .dexrow{display:flex;justify-content:space-between;font-size:13px;line-height:2;border-bottom:1px dashed var(--dim);}
+  .dexrow .rr{width:36px;text-align:right;}
+  .rN{color:var(--gray,#c8c8d0);} .rR{color:#3b9e5f;} .rSR{color:#b06fd4;} .rSSR{color:var(--gold);}
+  .dexrow.locked{color:var(--dim);}
+  #wall{color:var(--gray,#c8c8d0);}
+  #daily{color:var(--paper);}
+  .go-links{display:flex;gap:8px;margin-top:14px;}
+  .go-links .cbtn{margin-top:0;font-size:13px;padding:10px 4px;text-decoration:none;display:flex;align-items:center;justify-content:center;}
+  .linebtn{background:#06C755;}
+  #gameover{animation:goFade 1.4s ease both;}
+  @keyframes goFade{from{background:rgba(26,28,44,0);filter:sepia(0);}to{background:var(--bg);filter:sepia(.25);}}
+  .callov{background:rgba(16,16,24,.78);z-index:9;}
+  .phone{
+    width:min(78vw,270px);
+    background:var(--panel);
+    border:4px solid var(--paper);
+    box-shadow:0 0 0 4px var(--ink), 8px 8px 0 4px var(--ink);
+    padding:18px 16px;
+    text-align:center;
+    animation:ringshake .5s linear infinite;
+  }
+  .phone.calm{animation:none;}
+  @keyframes ringshake{
+    0%,100%{transform:rotate(0);}
+    20%{transform:rotate(-2deg);}
+    40%{transform:rotate(2deg);}
+    60%{transform:rotate(-1.5deg);}
+    80%{transform:rotate(1.5deg);}
+  }
+  .phone-screen{
+    background:var(--bg);
+    border:3px solid var(--dim);
+    padding:16px 10px;
+  }
+  .ring-icon{font-size:38px;animation:bl 0.8s steps(2,end) infinite;}
+  .caller{margin-top:8px;font-size:20px;color:var(--paper);}
+  .caller-sub{margin-top:4px;font-size:13px;color:var(--gray,#c8c8d0);animation:bl 1.2s steps(2,end) infinite;}
+  .call-btns{display:flex;gap:10px;margin-top:14px;}
+  .cbtn{flex:1;margin-top:0;padding:12px 0;font-size:18px;}
+  .cbtn.ans{background:#2f9e44;}
+  #callResult{padding:10px 4px;font-size:16px;line-height:1.9;}
+  #callResult .big{font-size:22px;}
+  #callResult .gold{color:var(--gold);}
+  #callResult .red{color:var(--red);}
+  #entryBox{margin-top:14px;}
+  .entry-title{font-size:14px;color:var(--gold);line-height:1.7;animation:bl 1s steps(2,end) infinite;}
+  #nameInput{
+    display:block;width:80%;margin:8px auto 0;
+    font-family:'DotGothic16',monospace;font-size:18px;text-align:center;
+    color:var(--paper);background:var(--bg);
+    border:3px solid var(--gold);
+    padding:8px;outline:none;
+  }
+  #regBtn{margin-top:10px;padding:8px 30px;font-size:16px;}
+  #ranking{margin-top:14px;font-size:13px;line-height:1.9;text-align:left;}
+  #ranking .rrow{display:flex;justify-content:space-between;border-bottom:1px dashed var(--dim);padding:2px 2px;}
+  #ranking .rrow.new{color:var(--gold);}
+  #ranking .rname{flex:1;margin:0 8px;overflow:hidden;white-space:nowrap;}
+  #ranking .rhead{text-align:center;color:var(--red);margin-bottom:4px;}
+  .uniBox{margin-top:18px;width:100%;max-width:300px;text-align:left;}
+  .uniBox label{font-size:12px;color:var(--gray,#c8c8d0);}
+  .uniBox input{
+    display:block;width:100%;margin-top:4px;
+    font-family:'DotGothic16',monospace;font-size:16px;
+    color:var(--paper);background:var(--bg);
+    border:3px solid var(--paper);
+    padding:8px 10px;outline:none;
+  }
+  .uniBox input:focus{border-color:var(--gold);}
+  .inputwrap{position:relative;}
+  #uniSuggest{
+    display:none;
+    position:absolute;top:100%;left:0;right:0;z-index:30;
+    background:var(--bg);
+    border:3px solid var(--gold);border-top:none;
+    max-height:186px;overflow-y:auto;
+  }
+  #uniSuggest .row{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:9px 10px;font-size:14px;
+    border-bottom:1px solid var(--dim);
+    cursor:pointer;
+  }
+  #uniSuggest .row:last-child{border-bottom:none;}
+  #uniSuggest .row:active{background:var(--panel);}
+  .rk{font-size:11px;padding:1px 6px;border:2px solid;line-height:1.4;}
+  .rkS{color:var(--gold);border-color:var(--gold);}
+  .rkA{color:var(--red);border-color:var(--red);}
+  .rkB{color:var(--paper);border-color:var(--paper);}
+  .rkC{color:#8f95b5;border-color:#8f95b5;}
+  #uniRank{
+    margin-top:6px;font-size:12px;color:var(--gold);
+    min-height:16px;text-shadow:1px 1px 0 var(--ink);
+  }
 </style>
 </head>
 <body>
@@ -276,14 +416,18 @@
   <canvas id="cv"></canvas>
   <div id="scan"></div>
 
+  <button id="ultBtn" class="hidden">一万回の型</button>
+
   <div id="hud">
     <div>
       <div id="hearts"></div>
       <div id="naitei"></div>
+      <div id="ghost"></div>
     </div>
     <div id="scorebox">
       <div id="score">0</div>
       <div id="combo"></div>
+      <div id="mult"></div>
       <button id="muteBtn">♪ON</button>
     </div>
   </div>
@@ -295,12 +439,13 @@
         <div class="label-strip"><span>シューカツシリーズ Vol.1</span><span>PFT</span></div>
         <div class="label-title">お祈りメール<br><span class="big">撃退道場</span></div>
         <img class="label-art" alt="" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABoCAIAAACBqWICAAAF20lEQVR4nO1dO24bMRClIx1gCxcBosKFAEORgBwgjYsAbt250SHSbptGrXMHN+lcpDGQwlcIsI4gwEWKPcAWbg2koEPTy9/McEhx5X1VtF7x8zicH4fK0ePPDyIZus2Ct8Gq3vI2KEKDfMfen44U8+FFcAnTEnQAGAkKIDlBWXfZ2U6c7eCvQ1TkNGI45WK2fvK/0F5PgE3lIKiqt+zmzI67U/XPtn1wvTWbzQXYwvYJCnLvAnxNhgWnBHlWQIdcjQNAdXsjhOjOL3rP35mS1rYPbfswm839k5cvyJfD3RfmEMG3/FS+bU5ATltSYH7N9Xy4MGVH4nmLWTkSQkhREtqO632EI5+qhmF131ifN8uV/vFFB3k4Ev9FZkCCA1GO5lzMb71S0t1mIYSdV9lWJDvZhMhjUrEDIPpB+o6V+v9QMcZiAeQmaL/2nrDBDzMWAwKiyIkExeidPdj7s50wPJ2eOdchxVwO0kLQwUQPLOgTZOW1tEDBRCjGnrfXEyGgYqsLOGiLuXxIMlLssr8/vrr+dHJ5Re4OasWKihJyAqGkeeUohRDtfv8xH55++hjTJs6Kse81XtC40G2WCShBL7HvOvwyMLtYWnxvBdoPCuZ6BwfrIqkEI4IglfcQBk36w4HS5AJRgvTEUEySKH6XkU8Z/FBuNzHUUMkzLDu2+YAye8HBnFxewYcBRFVv6cGqSqGVkBuy5gbhFFshrRtzNN+dXzTLVbd51ccQoUY+Jsws0NeVWYKq25vZbN5eT6TqtSngxhM0KaRQKED0pJ6BIJTeaZarx2+/IK9Zn1ttFqNjYeoEBEGocbi0T7zr7DzI1Nx3Wi/WMUMJQlqE4elm14omyUl7YtrVPVQHRRppFDzWNpUVIwj5yeUVi27Gdu33RRKa+fIjdQHw1NIe+6DyR+bWs9YX+G0FalUgYztqP3+Bt0iDq44CAojN0gEnCLhy0zxZK38WyRX0Yh0cdnaE1EFVvR1u0EQAarIvSvqN0ISdY19Jq+/T9p1L3WSovIIMmCABTivmz/XrMEkhaBMXfUnjLAgCZh4oULqFZgzEVXpXedXkEI+sPaCOoq6hqtsbxsxhhqLHGN2KcxRd1dYlI9LywAhSV2juToUQVf38qZBgwjOMeLscIkhSo10SsXS/3mcC0IN4drrNwk2QlxodyuvvNgtp0XKeHbrEJ4YdWH0QgJoeqnrbiok54tV9k7n8nMyOOXj+aD7S1UTBfqyOZ8cz1ITpDt3VzGb4sOwEVzF5GXBVbyEVM2x9gUG8cTgg9GYIZCfZXQ2wUTPH0SxRQ6IAwg5NJwIIQlJjBSGGUl9pxUSIflZP/+hnJ9JWhPwgEUuNH56cATCf7XmHxYzaCOIQGRRcNAU5Snd+q/CaoOzU6KjqreXo/cUCNuJ5uz3P32Qnhef1mqA9UaMDWCTaYyedUzo8M6/vuwzO+vAIgueCWTA8giSyHcBM8ywFuBfQGWzOGxH04gXezDSu63rbbRZ5lpayxfabmZbi0+MonUAhCFLyUkjSXq8qcHlG8QARlEdk4IkRpYN6lRcpBCp0cJiNmojvWmOUyGYVAgQRqPFXA/UqD1nm4KrgYaEpiR8UPGhnOZDRG/FUOUXuuz38NEUiixNsluYZlOtJWw/XZusn6Uw2y5XpLkKq5bACVRxBOi+Emhh4RSFQQ5VFkK7CyaWfqKrLIE0FXYciKAiuc2epnqytxUoQoZTZihS/PE1mnPm+mEdTAC/Qx7DjiezJFc66Io/aYiwGO2lQHjnCbrOgECR9mXLY8TcSOU4cQbxuXra0acyYKUWcLMhcvpeqypVxN+lgr9pNVEUugoXkEKS7csIOgl3rX4cC8gL5xQyrjQcuNfwXOXTnO0UFTNbLLIWUDaNv++S551MIOxKI+2J5DphSXHWL6QXeUY5gtSjZ0QG6s5r0Pz8SCVY1s4twVFXvUc29NUy/Hx/vewxFo6CEWZkYCQpgJCiAkaAARoICGAkKYCQogJGgAP4Bn3IJc03yYcgAAAAASUVORK5CYII=">
-        <div class="label-sub">〜 SEIKEN-ZUKI NO KATA 〜</div>
+        <div class="label-sub">〜 KANSHA NO SEIKEN-ZUKI 〜</div>
       </div>
       <div class="cart-screws"><i></i><i></i></div>
     </div>
     <div class="frame startframe">
-      <div class="sub">降りそそぐ祈りを<br><b>正拳突き</b>で粉砕せよ</div>
+      <div class="goal">🎯 このゲームの目標<br>就活偏差値<b>80</b>『最終面接』を突破して<br><b>内定</b>をつかみとること!</div>
+      <div class="sub">降りそそぐ祈りに<br><b>感謝の正拳突き</b>を<br><span style="font-size:11px;color:#8f95b5">目指せ、一万回。</span></div>
       <div class="rule">
         <div class="rule-h">─ そうさほうほう ─</div>
         <div class="ctrl-demo">
@@ -324,18 +469,71 @@
         ▶ 空振り・撃ち漏らしで ♥−1 ゼロでお祈り<br>
         ▶ 規定数撃墜で<b>就活偏差値</b>UP 次の企業へ
       </div>
+      <div id="wall"></div>
+      <div id="daily"></div>
+      <div class="uniBox">
+        <label for="uniInput">出身大学を入力(任意)</label>
+        <div class="inputwrap">
+          <input id="uniInput" type="text" placeholder="例:早稲田大学" maxlength="20" autocomplete="off" autocorrect="off" spellcheck="false">
+          <div id="uniSuggest"></div>
+        </div>
+        <div id="uniRank">未入力 → そのほか枠「逆転就活」倍率×2.0</div>
+      </div>
       <button class="btn" id="startBtn"><span class="blink">▶</span> PUSH START</button>
+      <button class="btn dailybtn" id="dailyBtn">🔥 きょうの一番勝負</button>
+      <div class="dailynote">全員おなじメール配置。スコアでともだちと勝負!</div>
+      <div id="streak"></div>
+      <div id="dexLink">📖 お祈り図鑑</div>
       <div class="hint">SOUND ON 推奨 🔊</div>
+    </div>
+  </div>
+
+  <div id="call" class="overlay callov hidden">
+    <div class="phone">
+      <div id="callMain">
+        <div class="phone-screen">
+          <div class="ring-icon">📞</div>
+          <div class="caller" id="callerName">非通知設定</div>
+          <div class="caller-sub">着信中…</div>
+        </div>
+        <div class="call-btns">
+          <button id="ansBtn" class="btn cbtn ans">出る</button>
+          <button id="igBtn" class="btn cbtn">無視</button>
+        </div>
+      </div>
+      <div id="callResult" class="hidden"></div>
+    </div>
+  </div>
+
+  <div id="dexOv" class="overlay hidden">
+    <div class="frame">
+      <h1 style="font-size:22px">📖 お祈り図鑑</h1>
+      <div class="pxbar"></div>
+      <div id="dexList" style="margin-top:12px;text-align:left"></div>
+      <button class="btn" id="dexClose" style="margin-top:18px;font-size:16px;padding:10px 30px">とじる</button>
     </div>
   </div>
 
   <div id="gameover" class="overlay hidden">
     <div class="frame">
+      <div id="kuyashii" class="hidden"></div>
       <div id="gtitle">今後のご活躍を<br>お祈り申し上げます</div>
       <div class="pxbar"></div>
       <div id="finalstats"></div>
-      <div id="rank">段</div><br>
+      <div id="rank">段</div>
+      <div id="nextGoal"></div>
+      <div id="entryBox" class="hidden">
+        <div class="entry-title">★ ハイスコア! ★<br>なまえを いれてください</div>
+        <input id="nameInput" maxlength="8" autocomplete="off" autocorrect="off" spellcheck="false">
+        <button class="btn cbtn" id="regBtn">登録</button>
+      </div>
+      <div id="ranking"></div>
+      <div class="go-links">
+        <button class="btn cbtn" id="shareBtn">結果をシェア</button>
+        <a class="btn cbtn linebtn" id="lineBtn" href="https://lin.ee/XXXXXXX" target="_blank" rel="noopener">就活News 友だち追加</a>
+      </div>
       <button class="btn" id="retryBtn"><span class="blink">▶</span> 再入門</button>
+      <div class="hint">画面をすばやく2回タップでも再入門できます</div>
     </div>
   </div>
 </div>
@@ -435,6 +633,28 @@
       });
     }catch(e){}
   }
+  function ringOnce(){
+    try{
+      const a=audio(), t=a.currentTime;
+      for(let i=0;i<8;i++){
+        const o=a.createOscillator(), g=a.createGain();
+        o.type='square'; o.frequency.value = i%2 ? 1040 : 830;
+        g.gain.setValueAtTime(.07, t+i*.07);
+        g.gain.exponentialRampToValueAtTime(.001, t+i*.07+.055);
+        o.connect(g).connect(a.destination);
+        o.start(t+i*.07); o.stop(t+i*.07+.06);
+      }
+    }catch(e){}
+  }
+  function ringStart(){
+    ringStop(); ringOnce();
+    ringTimer = setInterval(ringOnce, 1500);
+    if(navigator.vibrate) navigator.vibrate([300,200,300]);
+  }
+  function ringStop(){
+    if(ringTimer){ clearInterval(ringTimer); ringTimer=null; }
+  }
+
   function sDamage(){
     try{
       const a=audio(), t=a.currentTime;
@@ -537,7 +757,9 @@
       if(f){
         lead(bgm.next, f, .10);
         lead(bgm.next + spb*.5, f, .035); // 半拍遅れの残響エコー
+        if(combo>=10) lead(bgm.next, f*1.5, .04); // 10連撃:ハモリが乗る
       }
+      if(combo>=20) hat(bgm.next + spb*.5, false); // 20連撃:ハット倍速
       bgm.next += spb;
       bgm.step++;
     }
@@ -558,66 +780,256 @@
   // ---------- game state ----------
   const LANES = 2;
   const SNIPPETS = ['誠に残念ながら','慎重に選考した結果','ご期待に沿えず','今後のご活躍を','貴意に添いかねる','厳正なる選考の末'];
+  const MAILDEX = [
+    {t:'誠に残念ながら', r:'N'},
+    {t:'慎重に選考した結果', r:'N'},
+    {t:'ご期待に沿えず', r:'N'},
+    {t:'今後のご活躍を', r:'N'},
+    {t:'貴意に添いかねる', r:'N'},
+    {t:'厳正なる選考の末', r:'N'},
+    {t:'次のステップへ進む方が決定し', r:'R'},
+    {t:'応募多数につき', r:'R'},
+    {t:'今後のご縁があれば', r:'SR'},
+    {t:'ポジションクローズのため', r:'SR'},
+    {t:'あなたの今後のご多幸を', r:'SSR'},
+    {t:'社長が直々に見送りました', r:'SSR'}
+  ];
+  function rollDex(){
+    const p = R();
+    let tier = p<0.01 ? 'SSR' : p<0.05 ? 'SR' : p<0.20 ? 'R' : 'N';
+    const pool = MAILDEX.map((e,i)=>({e,i})).filter(x=>x.e.r===tier);
+    return pool[Math.floor(R()*pool.length)].i;
+  }
   // 就活偏差値ステージ(企業名はすべて架空です)
   const STAGES = [
-    {dev:45, name:'まちの実業(中小)',        need:8,  spd:0.85, iv:1.70, gold:.15},
-    {dev:52, name:'ニチジョー物産(中堅商社)', need:10, spd:1.00, iv:1.45, gold:.13},
+    {dev:45, name:'まちの実業(中小)',        need:8,  spd:0.95, iv:1.45, gold:.15},
+    {dev:52, name:'ニチジョー物産(中堅商社)', need:10, spd:1.05, iv:1.28, gold:.13},
     {dev:58, name:'メガベンチャー ラクテレ',   need:12, spd:1.15, iv:1.25, gold:.12},
     {dev:63, name:'日ノ本電機(大手メーカー)', need:14, spd:1.30, iv:1.05, gold:.10, ghost:true},
     {dev:68, name:'外資コンサル マッキンレー',  need:16, spd:1.45, iv:0.90, gold:.09, ghost:true, vary:true},
     {dev:73, name:'三ツ星商事(五大商社)',     need:18, spd:1.60, iv:0.78, gold:.08, ghost:true, vary:true},
     {dev:78, name:'外銀 ゴールドマン・サシミ', need:22, spd:1.80, iv:0.66, gold:.07, ghost:true, vary:true},
+    {dev:80, name:'最終面接 役員フロア',       need:30, spd:1.85, iv:0.62, gold:.06, ghost:true, vary:true, boss:true},
   ];
   function curStage(){ return STAGES[Math.min(stageIdx, STAGES.length-1)]; }
   function endlessBoost(){ return stageIdx >= STAGES.length ? 1 + (stageIdx-STAGES.length+1)*0.12 : 1; }
 
+  // 学歴フィルターバフ(ランクが低いほどスコア倍率が高い「逆転就活」設計)
+  const UNI_DB = [
+    {r:'S',n:'東京大学',k:['東大']},{r:'S',n:'京都大学',k:['京大']},{r:'S',n:'一橋大学',k:[]},
+    {r:'S',n:'東京工業大学',k:['東工大']},{r:'S',n:'東京科学大学',k:['科学大']},
+    {r:'S',n:'慶應義塾大学',k:['慶応','慶應','慶応義塾大学']},{r:'S',n:'早稲田大学',k:['早稲田']},
+    {r:'A',n:'北海道大学',k:['北大']},{r:'A',n:'東北大学',k:[]},{r:'A',n:'名古屋大学',k:['名大']},
+    {r:'A',n:'大阪大学',k:['阪大']},{r:'A',n:'九州大学',k:['九大']},{r:'A',n:'神戸大学',k:['神大']},
+    {r:'A',n:'筑波大学',k:[]},{r:'A',n:'横浜国立大学',k:['横国']},{r:'A',n:'上智大学',k:[]},
+    {r:'A',n:'東京理科大学',k:['理科大']},{r:'A',n:'国際基督教大学',k:['ICU']},{r:'A',n:'お茶の水女子大学',k:['お茶大']},
+    {r:'B',n:'明治大学',k:['明大']},{r:'B',n:'青山学院大学',k:['青学']},{r:'B',n:'立教大学',k:[]},
+    {r:'B',n:'中央大学',k:[]},{r:'B',n:'法政大学',k:[]},{r:'B',n:'関西大学',k:['関大']},
+    {r:'B',n:'関西学院大学',k:['関学']},{r:'B',n:'同志社大学',k:[]},{r:'B',n:'立命館大学',k:['立命']},
+    {r:'B',n:'千葉大学',k:[]},{r:'B',n:'広島大学',k:[]},{r:'B',n:'岡山大学',k:[]},
+    {r:'B',n:'金沢大学',k:[]},{r:'B',n:'学習院大学',k:[]},{r:'B',n:'津田塾大学',k:[]},
+    {r:'C',n:'日本大学',k:['日大']},{r:'C',n:'東洋大学',k:[]},{r:'C',n:'駒澤大学',k:['駒沢大学']},
+    {r:'C',n:'専修大学',k:[]},{r:'C',n:'京都産業大学',k:['京産大']},{r:'C',n:'近畿大学',k:['近大']},
+    {r:'C',n:'甲南大学',k:[]},{r:'C',n:'龍谷大学',k:[]},{r:'C',n:'成蹊大学',k:[]},
+    {r:'C',n:'成城大学',k:[]},{r:'C',n:'明治学院大学',k:['明学']},{r:'C',n:'獨協大学',k:['独協大学']},
+    {r:'C',n:'國學院大學',k:['国学院大学','国学院']},{r:'C',n:'武蔵大学',k:[]}
+  ];
+  const RANK_BUFFS = {
+    S:{hearts:6, win:1.2, mult:1.0, guts:false, label:'S級「学歴無双」', desc:'♥6・判定ひろい・倍率×1.0'},
+    A:{hearts:6, win:1.0, mult:1.2, guts:false, label:'A級「余裕の会釈」', desc:'♥6・倍率×1.2'},
+    B:{hearts:5, win:1.1, mult:1.4, guts:false, label:'B級「セミナー常連」', desc:'判定ややひろい・倍率×1.4'},
+    C:{hearts:5, win:1.0, mult:1.7, guts:false, label:'C級「OB訪問の鬼」', desc:'倍率×1.7'},
+    F:{hearts:5, win:1.0, mult:2.0, guts:true,  label:'そのほか枠「逆転就活」', desc:'根性(被弾1回無効)・倍率×2.0'}
+  };
+  function normUni(s){ return (s||'').replace(/[\s ]/g,'').replace(/大[学學]$/,''); }
+  function uniKeys(u){ return [u.n].concat(u.k).map(normUni); }
+  function matchUni(name){
+    const n = normUni(name);
+    if(n.length < 2) return 'F';
+    for(const u of UNI_DB) if(uniKeys(u).some(k => k === n)) return u.r;
+    for(const u of UNI_DB) if(uniKeys(u).some(k => k.length>=2 && (k.includes(n) || n.includes(k)))) return u.r;
+    return 'F';
+  }
+  function suggestUni(q){
+    const n = normUni(q);
+    if(!n) return [];
+    const starts = [], incl = [];
+    for(const u of UNI_DB){
+      const ks = uniKeys(u);
+      if(ks.some(k => k.startsWith(n))) starts.push(u);
+      else if(ks.some(k => k.includes(n))) incl.push(u);
+    }
+    return starts.concat(incl).slice(0,6);
+  }
+  let buff = RANK_BUFFS.F, buffMsg = '';
+
+  // スコアで昇段する帯
+  const BELTS = [
+    {s:0,     c:'#f4f4f4', n:'白帯'},
+    {s:1000,  c:'#f4d03f', n:'黄帯'},
+    {s:2500,  c:'#e67e22', n:'橙帯'},
+    {s:5000,  c:'#2f9e44', n:'緑帯'},
+    {s:8000,  c:'#3b6fd4', n:'青帯'},
+    {s:12000, c:'#7a4a1e', n:'茶帯'},
+    {s:18000, c:'#101018', n:'黒帯'},
+    {s:25000, c:'#e43b44', n:'赤帯(師範)'}
+  ];
+  function beltIdx(sc){ let i=0; for(let j=0;j<BELTS.length;j++) if(sc>=BELTS[j].s) i=j; return i; }
+  let lastBelt = 0;
+
+  function computeTitle(){
+    if(!tookDamage && score>0) return '無傷の求道者';
+    if(gotBig) return '大手内定エリート';
+    if(naitei>=5) return '内定コレクター';
+    if(callsAnswered>=3) return '電話ぜったい出るマン';
+    if(maxCombo>=40) return '刻みの達人';
+    if(punched>=150) return '感謝の鬼';
+    if(score<300) return 'お祈りされ太郎';
+    return '就活戦士';
+  }
+  function todayKey(){ return new Date().toISOString().slice(0,10); }
+  const QUESTS = [
+    {d:'「感謝!!」を30回きめる', f:()=>perfectCount>=30},
+    {d:'内定を3社あつめる',      f:()=>naitei>=3},
+    {d:'スコア5000点をとる',     f:()=>score>=5000},
+    {d:'40連撃をきめる',         f:()=>maxCombo>=40}
+  ];
+  function todayQuest(){
+    let h=0; for(const ch of todayKey()) h=(h*31+ch.charCodeAt(0))>>>0;
+    return QUESTS[h%QUESTS.length];
+  }
+  const TIPS = [
+    'ESは結論から。1文目で任せたい仕事を想像させよう',
+    '面接の逆質問は「入社後の活躍条件」を聞くと好印象',
+    'お祈りは母数のゲーム。持ち駒は常に10社キープ',
+    '自己分析は他己分析とセットで精度が上がる',
+    '説明会の質問タイムは名前を覚えてもらうチャンス',
+    '一次面接は結論→根拠→具体例の3段で話す',
+    'OB訪問は「仕事の1日の流れ」を聞くと解像度UP',
+    '落ちても人格は否定されていない。次いこう、次'
+  ];
+
+  // ローカル保存(使えない環境ではメモリ保持)
+  const MEM = {};
+  function store(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){ MEM[k]=v; } }
+  function loadS(k,d){ try{ const s=localStorage.getItem(k); if(s!=null) return JSON.parse(s); }catch(e){ if(k in MEM) return MEM[k]; } return d; }
+  let kansha = 0; // 感謝の正拳突き累計(セッション内で累積・リトライでもリセットしない)
+
   let mails, parts, texts, fists, score, combo, maxCombo, hearts, punched, naitei;
   let stageIdx, stageKills, introT;
   let running=false, tPrev=0, spawnTimer=0, elapsed=0, shake=0;
-  let padFlash=[0,0], hintT=0;
+  let padFlash=[0,0], hintT=0, gutsLeft=0;
+  let paused=false, callTimer=0, nextCall=0, callTO=null, ringTimer=null, debuffT=0;
+  let gauge=0, zoneT=0, counterT=0, hitstop=0, flashT=0, perfectStreak=0, perfectCount=0;
+  let ultActive=0, ultTick=0, callsAnswered=0, tookDamage=false;
+  let volleyLane=0, volleyLeft=0, silenceT=0, bonusT=0;
+  let debuffLabel='営業トーク疲れ', callType='unknown', lastTitle='', reachedLast=45, nextKanshaGoal=10000;
+  let tutLeft=0;
+  let dailyMode=false, rngState=0;
+  let newDexRun=0, gotBig=false, ghostArr=[], runArr=[], ghostBest=0, ghostTick=-1;
+  function seedRng(s){ rngState = s>>>0; }
+  function R(){
+    if(!dailyMode) return Math.random();
+    rngState = rngState + 0x6D2B79F5 | 0;
+    let t = Math.imul(rngState ^ rngState>>>15, 1|rngState);
+    t = t + Math.imul(t ^ t>>>7, 61|t) ^ t;
+    return ((t ^ t>>>14)>>>0)/4294967296;
+  }
 
   function laneX(i){ return W/LANES*(i+0.5); }
   function hitY(){ return H - 150; }
 
   function reset(){
     mails=[]; parts=[]; texts=[]; fists=[0,0];
-    score=0; combo=0; maxCombo=0; hearts=5; punched=0; naitei=0;
+    score=0; combo=0; maxCombo=0; hearts=buff.hearts + (loadS('dojoDaily','')===todayKey()?1:0); punched=0; naitei=0; gutsLeft = buff.guts ? 1 : 0;
     spawnTimer=0; elapsed=0; shake=0;
     stageIdx=0; stageKills=0; introT=2.4;
     padFlash=[0,0]; hintT=0;
+    paused=false; debuffT=0; callTimer=0; nextCall=18+Math.random()*10;
+    lastBelt=0;
+    gauge=0; zoneT=0; counterT=0; hitstop=0; flashT=0; perfectStreak=0; perfectCount=0;
+    ultActive=0; ultTick=0; callsAnswered=0; tookDamage=false;
+    volleyLeft=0; silenceT=0; bonusT=0; debuffLabel='営業トーク疲れ';
+    ultBtn.classList.add('hidden');
+    // 初回のみチュートリアル(ゆっくり3通・ノーダメージ)
+    tutLeft = loadS('dojoTut', false) ? 0 : 3;
+    if(tutLeft>0){ introT=0; nextCall=99999; }
+    if(dailyMode){
+      let h=0; for(const ch of todayKey()) h=(h*33+ch.charCodeAt(0))>>>0;
+      seedRng(h);
+      nextCall = 20; // デイリーは全員おなじタイミング
+    }
+    newDexRun=0; gotBig=false;
+    runArr=[]; ghostTick=-1;
+    ghostArr = loadS('dojoGhost', []);
+    ghostBest = loadS('dojoBestScore', 0);
+    ghostEl.textContent = ghostBest>0 ? 'GHOST ' + ghostBest : '';
+    if(callTO){ clearTimeout(callTO); callTO=null; }
+    ringStop();
+    callOv.classList.add('hidden');
     updateHUD();
   }
 
   const naiteiEl = document.getElementById('naitei');
+  const ghostEl = document.getElementById('ghost');
+  const multEl = document.getElementById('mult');
   function updateHUD(){
-    heartsEl.innerHTML = '♥'.repeat(hearts) + '<span class="off">' + '♥'.repeat(Math.max(0,5-hearts)) + '</span>';
+    heartsEl.innerHTML = '♥'.repeat(hearts) + '<span class="off">' + '♥'.repeat(Math.max(0,buff.hearts-hearts)) + '</span>';
     naiteiEl.textContent = '内定 ' + naitei + '社';
+    multEl.textContent = '×' + buff.mult.toFixed(1) + (gutsLeft>0 ? ' 根性' : '');
     scoreEl.textContent = score;
     comboEl.textContent = combo>=2 ? combo+' RENGEKI' : '';
   }
 
   function spawn(){
     const st = curStage(), boost = endlessBoost();
-    const lane = Math.floor(Math.random()*LANES);
-    const gold = Math.random() < st.gold;
+    let lane, kind='normal';
+    if(bonusT>0){
+      lane = Math.floor(R()*LANES); kind='card';
+    } else if(volleyLeft>0){
+      lane = volleyLane; volleyLeft--;
+    } else {
+      lane = Math.floor(R()*LANES);
+      const r = R();
+      if(r < st.gold) kind='gold';
+      else if(st.boss && r < st.gold+0.30) kind='pressure';
+      else if(stageIdx>=4 && !st.boss && r < st.gold+0.10) kind='pressure';
+      else if(stageIdx>=3 && r < st.gold+0.17) kind='bomb';
+      else if(stageIdx>=5 && r < st.gold+0.27) kind='stealth';
+      if(kind==='normal' && stageIdx>=2 && R()<0.07){
+        volleyLane=lane; volleyLeft=4;
+        addText(laneX(lane), 60, 'テンプレ一斉送信!', C.red, 16);
+      }
+    }
     const ramp = 1 + (stageKills/st.need)*0.25;
-    const speed = (150 + Math.random()*40) * st.spd * ramp * boost * (H/700);
+    let speed = (150 + R()*40) * st.spd * ramp * boost * (H/700);
+    if(kind==='pressure') speed *= 0.55;
+    if(kind==='card') speed *= 1.4;
+    const dex = (kind==='normal'||kind==='stealth') ? rollDex() : null;
     mails.push({
-      lane, y:-60, speed, gold,
-      snippet:SNIPPETS[Math.floor(Math.random()*SNIPPETS.length)],
+      lane, y:-60, speed,
+      kind, gold: kind==='gold',
+      rainbow: kind==='gold' && R()<0.15, // 大手内定(レインボー)
+      hp: kind==='pressure' ? 3 : 1,
+      dex,
+      snippet: dex!=null ? MAILDEX[dex].t : SNIPPETS[Math.floor(R()*SNIPPETS.length)],
       dead:false,
-      ghost: !gold && st.ghost && Math.random()<0.35,
-      vary:  !gold && st.vary  && Math.random()<0.35,
-      ph: Math.random()*Math.PI*2
+      ghost: kind==='normal' && st.ghost && R()<0.3,
+      vary:  (kind==='normal'||kind==='bomb') && st.vary && R()<0.35,
+      ph: R()*Math.PI*2
     });
   }
 
   function stageClear(){
     for(const m of mails){ if(!m.dead){ m.dead=true; if(!m.gold){ shred(laneX(m.lane), m.y, false); score+=50; } } }
     sGold();
-    if(hearts<5){ hearts++; }
+    if(hearts<buff.hearts){ hearts++; }
     addText(W/2, H*0.35, '内定辞退!次の企業へ', C.gold, 22);
     stageIdx++; stageKills=0; introT=2.4;
+    if(stageIdx===STAGES.length){
+      addText(W/2, H*0.28, '内定獲得!!全クリア!!', C.gold, 30);
+      flashT=0.2;
+    }
     updateHUD();
   }
 
@@ -637,15 +1049,49 @@
   }
 
   function loseHeart(reason){
-    hearts--; shake=10; sDamage(); combo=0;
+    if(tutLeft>0){
+      shake=4; combo=0;
+      addText(W/2, H*0.42, 'れんしゅう中はノーダメージ!', C.gold, 18);
+      return;
+    }
+    if(gutsLeft>0){
+      gutsLeft--; shake=6; combo=0;
+      addText(W/2, H*0.4, '根性でこらえた!', C.gold, 26);
+      updateHUD();
+      return;
+    }
+    hearts--; shake=10; sDamage(); combo=0; perfectStreak=0; tookDamage=true;
     if(navigator.vibrate) navigator.vibrate([40,30,40]);
     addText(W/2, H*0.4, reason, C.red, 26);
     updateHUD();
     if(hearts<=0) gameOver();
   }
 
+  function scoreMultNow(){ return buff.mult * (counterT>0 ? 2 : 1); }
+  function killMail(m, x, y, base){
+    m.dead=true; punched++; kansha++;
+    combo++; maxCombo=Math.max(maxCombo,combo);
+    score += Math.round((base + combo*10) * scoreMultNow());
+    gauge = Math.min(100, gauge+6);
+    stageKills++;
+    shred(x, y, m.kind==='card' || m.gold);
+    // お祈り図鑑
+    if(m.dex!=null){
+      const dex = loadS('dojoDex', []);
+      if(!dex.includes(m.dex)){
+        dex.push(m.dex); store('dojoDex', dex);
+        newDexRun++;
+        const e = MAILDEX[m.dex];
+        addText(W/2, H*0.22, '図鑑登録「'+e.t+'」['+e.r+']', e.r==='SSR'?C.gold:C.paper, e.r==='N'?14:18);
+        if(e.r==='SSR'){ sGold(); flashT=0.12; }
+      }
+    }
+  }
+  function showUltIfReady(){
+    if(gauge>=100 && ultActive<=0) ultBtn.classList.remove('hidden');
+  }
   function punch(lane){
-    if(!running) return;
+    if(!running || paused || ultActive>0) return;
     fists[lane]=1;
     padFlash[lane]=1;
     if(navigator.vibrate) navigator.vibrate(12);
@@ -656,40 +1102,299 @@
       const d = Math.abs(m.y - hy);
       if(d < bd){ bd=d; best=m; }
     }
-    if(best && bd < 70){
+    const winMul = (best && best.kind==='pressure') ? 1.4 : 1; // デカいので当てやすい
+    if(best && bd < 70*buff.win*winMul){
       if(best.gold){
         best.dead=true;
         shred(laneX(lane), best.y, true);
         loseHeart('内定を殴るな!');
         return;
       }
-      best.dead=true; punched++;
-      const perfect = bd < 28;
-      const pts = perfect ? 300 : 100;
-      combo++; maxCombo=Math.max(maxCombo,combo);
-      score += pts + combo*10;
-      stageKills++;
-      if(stageKills >= curStage().need){ updateHUD(); shred(laneX(lane), best.y, false); sPunch(perfect); stageClear(); return; }
-      shred(laneX(lane), best.y, false);
-      addText(laneX(lane), best.y-40, perfect?'一本!':'有効', perfect?C.red:C.paper, perfect?28:22);
+      const perfect = bd < 28*buff.win;
+      if(best.kind==='pressure'){
+        best.hp--;
+        best.y -= 46;
+        sPunch(perfect);
+        if(best.hp>0){
+          hitstop=0.03;
+          shred(laneX(lane), best.y+46, false);
+          combo++; maxCombo=Math.max(maxCombo,combo);
+          gauge=Math.min(100,gauge+4);
+          addText(laneX(lane), best.y-20, 'まだ折れない…', C.gray, 15);
+          showUltIfReady(); updateHUD();
+          return;
+        }
+        killMail(best, laneX(lane), best.y, 400);
+        addText(laneX(lane), best.y-40, '圧迫粉砕!!', C.gold, 28);
+        hitstop=0.08; flashT=0.12;
+      } else if(best.kind==='bomb'){
+        killMail(best, laneX(lane), best.y, 200);
+        let chain=0;
+        for(const o of mails){
+          if(o.dead || o.gold || o===best) continue;
+          const dx = laneX(o.lane)-laneX(lane), dy = o.y-best.y;
+          if(dx*dx+dy*dy < 150*150){
+            o.dead=true; punched++; kansha++; stageKills++; chain++;
+            score += Math.round(150*scoreMultNow());
+            shred(laneX(o.lane), o.y, false);
+          }
+        }
+        addText(laneX(lane), best.y-40, chain>0 ? '連鎖×'+(chain+1)+'!!' : '爆砕!', C.gold, 28);
+        hitstop=0.08; flashT=0.14;
+        if(navigator.vibrate) navigator.vibrate(40);
+      } else if(best.kind==='card'){
+        killMail(best, laneX(lane), best.y, 100);
+        addText(laneX(lane), best.y-30, '名刺GET', C.gold, 16);
+        hitstop=0.02;
+      } else {
+        killMail(best, laneX(lane), best.y, perfect?300:100);
+        addText(laneX(lane), best.y-40, perfect?'感謝!!':'一本', perfect?C.gold:C.paper, perfect?30:22);
+        if(tutLeft>0){
+          tutLeft--;
+          if(tutLeft===0){
+            store('dojoTut', true);
+            addText(W/2, H*0.3, '入門完了!修行開始!!', C.gold, 26);
+            flashT=0.12;
+            introT=2.4;
+            nextCall = callTimer + 20 + Math.random()*8;
+          }
+        }
+        hitstop = perfect ? 0.065 : 0.04;
+        if(perfect){
+          perfectCount++;
+          flashT=0.09;
+          gauge=Math.min(100,gauge+4);
+          perfectStreak++;
+          if(perfectStreak>=5){
+            perfectStreak=0; zoneT=4;
+            addText(W/2, H*0.32, 'ゾーン突入!!', C.gold, 26);
+          }
+        } else perfectStreak=0;
+      }
       sPunch(perfect);
+      showUltIfReady();
+      if(stageKills >= curStage().need){ updateHUD(); stageClear(); return; }
       updateHUD();
     } else {
       sWhiff();
+      perfectStreak=0;
       loseHeart('空振り!');
     }
   }
 
+  const callOv = document.getElementById('call');
+  const callMain = document.getElementById('callMain');
+  const callResult = document.getElementById('callResult');
+  const phoneEl = document.querySelector('.phone');
+
+  const callerNameEl = document.getElementById('callerName');
+  function triggerCall(){
+    callType = R()<0.5 ? 'unknown' : 'mama';
+    callerNameEl.textContent = callType==='mama' ? '母' : '非通知設定';
+    paused = true;
+    callMain.classList.remove('hidden');
+    callResult.classList.add('hidden');
+    callResult.innerHTML='';
+    phoneEl.classList.remove('calm');
+    callOv.classList.remove('hidden');
+    ringStart();
+    callTO = setTimeout(()=>resolveCall('timeout'), 6000);
+  }
+  function resolveCall(kind){
+    if(callTO){ clearTimeout(callTO); callTO=null; }
+    ringStop();
+    if(kind!=='answer'){
+      closeCall();
+      if(callType==='mama' && kind==='ignore'){
+        debuffT=8; debuffLabel='罪悪感';
+        addText(W/2, H*0.42, '母からの電話を無視した…', C.red, 20);
+      } else {
+        addText(W/2, H*0.42, kind==='timeout' ? '留守電になった…' : '着信を無視した', C.gray, 20);
+      }
+      return;
+    }
+    callsAnswered++;
+    if(callType==='mama'){
+      phoneEl.classList.add('calm');
+      callMain.classList.add('hidden');
+      callResult.classList.remove('hidden');
+      if(hearts<buff.hearts) hearts++;
+      combo=0; perfectStreak=0;
+      updateHUD();
+      callResult.innerHTML = '<div class="big gold">「就活、どうなの…?」</div>心にくるが ♥+1<br>(コンボはリセット)';
+      setTimeout(closeCall, 2000);
+      return;
+    }
+    // 出た:2分の1の賭け
+    phoneEl.classList.add('calm');
+    callMain.classList.add('hidden');
+    callResult.classList.remove('hidden');
+    if(R() < 0.5){
+      hearts = buff.hearts; naitei++;
+      updateHUD(); sGold();
+      callResult.innerHTML = '<div class="big gold">「内定のご連絡です!」</div>♥ぜんかいふく + 内定'+naitei+'社目';
+    } else {
+      debuffT = 12; debuffLabel='営業トーク疲れ';
+      sDamage();
+      if(navigator.vibrate) navigator.vibrate(80);
+      callResult.innerHTML = '<div class="big red">「就活エージェントです、<br>面談だけでも…」</div>営業トーク疲れ:12秒間 落下スピードUP';
+    }
+    setTimeout(closeCall, 2000);
+  }
+  function closeCall(){
+    callOv.classList.add('hidden');
+    paused = false;
+    nextCall = callTimer + 25 + R()*15;
+  }
+  document.getElementById('ansBtn').addEventListener('click', ()=>resolveCall('answer'));
+  document.getElementById('igBtn').addEventListener('click', ()=>resolveCall('ignore'));
+
   function gameOver(){
     running=false;
+    ringStop();
+    if(callTO){ clearTimeout(callTO); callTO=null; }
     bgmStop();
     const reached = stageIdx < STAGES.length ? STAGES[stageIdx].dev : STAGES[STAGES.length-1].dev + (stageIdx-STAGES.length+1)*2;
-    statsEl.innerHTML = `到達 就活偏差値 <span class="kin">${reached}</span><br>内定ホルダー数 <span class="kin">${naitei}社</span><br>撃墜 ${punched} 通 / 最大 ${maxCombo} 連撃<br>SCORE ${score}`;
-    let r='入門';
-    if(stageIdx>=7) r='師範'; else if(stageIdx>=5) r='黒帯'; else if(stageIdx>=3) r='茶帯'; else if(stageIdx>=1) r='白帯';
-    rankEl.textContent = r;
+    reachedLast = reached;
+    lastTitle = computeTitle();
+    let dailyMsg = '';
+    if(loadS('dojoDaily','') !== todayKey() && todayQuest().f()){
+      store('dojoDaily', todayKey());
+      dailyMsg = '<br><span class="kin">きょうの修行 達成!あすまで♥+1で入門</span>';
+    }
+    const bbPrev = loadS('dojoBelt', 0);
+    if(beltIdx(score) > bbPrev) store('dojoBelt', beltIdx(score));
+    updateStartMeta();
+    statsEl.innerHTML = `称号「<span class="kin">${lastTitle}</span>」<br>到達 就活偏差値 <span class="kin">${reached}</span><br>内定ホルダー数 <span class="kin">${naitei}社</span><br>撃墜 ${punched} 通 / 最大 ${maxCombo} 連撃<br>感謝の正拳突き 累計 ${kansha} 回<br>SCORE ${score} <span class="kin">(×${buff.mult.toFixed(1)})</span>` + dailyMsg;
+    // つぎの目標を提示(終着点とリトライ動機)
+    const goals = [];
+    if(stageIdx < STAGES.length){
+      goals.push('偏差値' + curStage().dev + '「' + curStage().name + '」を突破する');
+      if(curStage().dev < 80) goals.push('最終目標:偏差値80の最終面接で内定獲得');
+    } else {
+      goals.push('内定獲得ずみ!つぎは感謝' + (nextKanshaGoal/10000) + '万回と赤帯(師範)へ');
+    }
+    const bi2 = beltIdx(score);
+    if(bi2 < BELTS.length-1) goals.push(BELTS[bi2+1].n + 'まで あと' + (BELTS[bi2+1].s - score) + '点');
+    const rk0 = loadS('dojoRanking', []);
+    if(rk0.length && score < rk0[0].score) goals.push('道場1位まで あと' + (rk0[0].score - score) + '点');
+    // 「惜しい!」演出(損失回避でリトライを誘う)
+    const kuEl = document.getElementById('kuyashii');
+    const needLeft = curStage().need - stageKills;
+    let ku = '';
+    if(stageIdx < STAGES.length && stageKills>0 && needLeft<=3) ku = 'あと'+needLeft+'通で<br>ステージクリアだった…!';
+    else if(rk0.length && score<rk0[0].score && rk0[0].score-score<=600) ku = '道場1位まで<br>あと'+(rk0[0].score-score)+'点だった…!';
+    else if(ghostBest>0 && score<ghostBest && ghostBest-score<=600) ku = '自己ベストまで<br>あと'+(ghostBest-score)+'点…!';
+    else if(score>ghostBest && ghostBest>0) ku = '自己ベスト更新!!';
+    if(ku){ kuEl.innerHTML=ku; kuEl.classList.remove('hidden'); } else kuEl.classList.add('hidden');
+    // 自己ベスト&ゴースト保存
+    if(score > ghostBest){
+      store('dojoBestScore', score);
+      store('dojoGhost', runArr);
+    }
+    // デイリー勝負ベスト
+    let extraLines = '';
+    if(dailyMode){
+      const dk = 'dojoDailyBest-'+todayKey();
+      const prev = loadS(dk, 0);
+      if(score>prev) store(dk, score);
+      extraLines += '<br>🔥きょうの一番勝負ベスト:' + Math.max(prev,score);
+    }
+    if(newDexRun>0) extraLines += '<br>📖 図鑑 +' + newDexRun + '種登録(' + loadS('dojoDex',[]).length + '/' + MAILDEX.length + ')';
+    statsEl.innerHTML += extraLines;
+    document.getElementById('nextGoal').innerHTML =
+      '<div class="ng-h">─ つぎの目標 ─</div>' + goals.map(g=>'▶ ' + g).join('<br>');
+    // タイプライター演出
+    const gt = document.getElementById('gtitle');
+    const full = '今後のご活躍を\nお祈り申し上げます';
+    gt.style.whiteSpace='pre-line';
+    gt.textContent='';
+    let ci=0;
+    const ti=setInterval(()=>{
+      gt.textContent = full.slice(0,++ci);
+      if(ci>=full.length) clearInterval(ti);
+    }, 60);
+    const belt = BELTS[beltIdx(score)];
+    rankEl.textContent = belt.n;
+    rankEl.style.color = belt.c === '#101018' ? '#9aa0be' : belt.c;
+    rankEl.style.borderColor = rankEl.style.color;
+
+    // ランキング判定
+    pendingEntry = null;
+    const rk = loadS('dojoRanking', []);
+    if(rk.length < 5 || score > rk[rk.length-1].score){
+      pendingEntry = { name:'', score, dev:reached, naitei };
+      nameInput.value = loadS('dojoName', '');
+      entryBox.classList.remove('hidden');
+    } else {
+      entryBox.classList.add('hidden');
+    }
+    renderRanking(rk, null);
     overOv.classList.remove('hidden');
   }
+
+  const entryBox = document.getElementById('entryBox');
+  const nameInput = document.getElementById('nameInput');
+  const rankingEl = document.getElementById('ranking');
+  let pendingEntry = null;
+
+  function renderRanking(rk, newIdx){
+    if(rk.length===0){ rankingEl.innerHTML=''; return; }
+    rankingEl.innerHTML = '<div class="rhead">─ 道場ランキング ─</div>' + rk.map((e,i)=>
+      `<div class="rrow${i===newIdx?' new':''}"><span>${i+1}位</span><span class="rname">${(e.name||'ナナシ').replace(/[<>&]/g,'')}</span><span>${e.score}</span></div>`
+    ).join('');
+  }
+  document.getElementById('shareBtn').addEventListener('click', ()=>{
+    const c = document.createElement('canvas'); c.width=600; c.height=780;
+    const g = c.getContext('2d');
+    g.fillStyle='#1a1c2c'; g.fillRect(0,0,600,780);
+    g.fillStyle='#262b44'; g.fillRect(20,20,560,740);
+    g.strokeStyle='#f4f4f4'; g.lineWidth=6; g.strokeRect(20,20,560,740);
+    g.strokeStyle='#e43b44'; g.lineWidth=3; g.strokeRect(32,32,536,716);
+    g.textAlign='center';
+    g.fillStyle='#e43b44'; g.font="40px 'DotGothic16',monospace";
+    g.fillText('お祈りメール撃退道場',300,92);
+    g.fillStyle='#8f95b5'; g.font="20px 'DotGothic16',monospace";
+    g.fillText('〜 KANSHA NO SEIKEN-ZUKI 〜',300,126);
+    g.fillStyle='#f4b41b'; g.font="62px 'DotGothic16',monospace";
+    g.fillText('SCORE '+score,300,230);
+    g.fillStyle='#f4f4f4'; g.font="28px 'DotGothic16',monospace";
+    [ '到達 就活偏差値 '+reachedLast,
+      '内定ホルダー '+naitei+'社',
+      '感謝の正拳突き 累計 '+kansha+'回',
+      '称号「'+lastTitle+'」'
+    ].forEach((l,i)=>g.fillText(l,300,310+i*54));
+    const b = BELTS[beltIdx(score)];
+    g.fillStyle='#f4f4f4'; g.fillRect(140,560,320,60);
+    g.fillStyle=b.c; g.fillRect(140,580,320,20);
+    g.fillStyle='#f4f4f4'; g.font="26px 'DotGothic16',monospace";
+    g.fillText(b.n,300,668);
+    g.fillStyle='#8f95b5'; g.font="18px 'DotGothic16',monospace";
+    g.fillText('#お祈りメール撃退道場 #就活News',300,724);
+    c.toBlob(async blob=>{
+      if(!blob) return;
+      const file = new File([blob],'dojo_result.png',{type:'image/png'});
+      if(navigator.canShare && navigator.canShare({files:[file]})){
+        try{ await navigator.share({files:[file], text: dailyMode ? 'きょうの一番勝負スコア!キミも挑戦しろ' : 'お祈りメール撃退道場で修行した!'}); return; }catch(e){}
+      }
+      window.open(URL.createObjectURL(blob),'_blank');
+    });
+  });
+
+  document.getElementById('regBtn').addEventListener('click', ()=>{
+    if(!pendingEntry) return;
+    pendingEntry.name = (nameInput.value.trim() || 'ナナシ').slice(0,8);
+    store('dojoName', pendingEntry.name);
+    let rk = loadS('dojoRanking', []);
+    rk.push(pendingEntry);
+    rk.sort((a,b)=>b.score-a.score);
+    rk = rk.slice(0,5);
+    const newIdx = rk.indexOf(pendingEntry);
+    store('dojoRanking', rk);
+    pendingEntry = null;
+    entryBox.classList.add('hidden');
+    renderRanking(rk, newIdx);
+  });
 
   // ---------- sprites ----------
   const FIST = [
@@ -765,101 +1470,169 @@
     for(let i=0;i<total;i++){
       pr(bx+i*(segW+gap), 64, segW, PX*2, i<stageKills ? C.red : C.dim);
     }
+    if(debuffT>0) pxText(debuffLabel + ' ' + Math.ceil(debuffT) + 's', W/2, 88, 12, C.red);
+    // 感謝の正拳突きカウンター
+    const goal = nextKanshaGoal;
+    ctx.save();
+    ctx.globalAlpha = .85;
+    pxText((goal/10000)+'万回まで', W-10, H*0.50, 11, C.gray, 'right');
+    pxText('あと' + (goal-kansha) + '回', W-10, H*0.50+16, 12, C.gray, 'right');
+    ctx.restore();
     // 登場バナー
     if(introT>0){
       const a = Math.min(1, introT/0.4, (2.4-introT)/0.3+0.01);
       ctx.save();
       ctx.globalAlpha = Math.max(0, Math.min(1,a));
-      pr(0,H*0.34,W,110,C.ink);
+      pr(0,H*0.34,W,134,C.ink);
       pr(0,H*0.34,W,PX,C.red);
-      pr(0,H*0.34+110-PX,W,PX,C.red);
+      pr(0,H*0.34+134-PX,W,PX,C.red);
       const label = stageIdx < STAGES.length ? `第${stageIdx+1}回戦 ─ 就活偏差値 ${dev}` : `延長戦 ─ 就活偏差値 ${dev}`;
       pxText(stageIdx < STAGES.length ? label : '無い内定地獄・'+label, W/2, H*0.34+34, 14, C.gold);
       pxText(st.name, W/2, H*0.34+74, 20, C.paper);
+      if(buffMsg) pxText(buffMsg, W/2, H*0.34+98, 11, C.gold);
+      pxText('💡' + TIPS[stageIdx % TIPS.length], W/2, H*0.34+118, 10, C.gray);
       ctx.restore();
     }
   }
 
+  function drawTutorial(){
+    if(tutLeft<=0) return;
+    pxText('チュートリアル', W/2, H*0.20, 13, C.gray);
+    pxText('しろい線にかさなったら…', W/2, H*0.20+22, 16, C.paper);
+    const m = mails.find(mm=>!mm.dead);
+    if(m){
+      const side = m.lane===0 ? '左' : '右';
+      pxText('【' + side + '】のパッドをタップ!', W/2, H*0.20+46, 18, C.gold);
+      if(Math.floor(elapsed*3)%2===0) pxText('▼', laneX(m.lane), hitY()+36, 22, C.gold);
+    }
+    pxText('のこり ' + tutLeft + ' 通で入門完了(ミスしても平気)', W/2, H*0.20+70, 11, C.gray);
+  }
+
   function drawMail(m){
     const laneW = W/LANES;
-    const S = Math.max(2, Math.floor(Math.min(laneW-20,124)/26));
+    let S = Math.max(2, Math.floor(Math.min(laneW-20,124)/26));
+    if(m.kind==='pressure') S = Math.max(3, Math.round(S*1.5));
+    if(m.kind==='card') S = Math.max(2, Math.round(S*0.6));
     const w=26*S, h=18*S;
     const x=Math.round((laneX(m.lane)-w/2)/S)*S;
     const y=Math.round((m.y-h/2)/S)*S;
     ctx.save();
     if(m.ghost) ctx.globalAlpha = 0.25 + 0.55*Math.abs(Math.sin(elapsed*2.5+m.ph));
+    if(m.kind==='stealth'){
+      const bl = (Math.sin(elapsed*3+m.ph)+1)/2;
+      ctx.globalAlpha = bl>0.82 ? 0.9 : 0.07;
+    }
+    const bodyC = m.rainbow ? `hsl(${Math.floor(elapsed*160)%360},85%,62%)` : m.gold ? C.gold : m.kind==='bomb' ? '#3a3f5c' : m.kind==='card' ? C.gold : C.paper;
+    const shC   = m.gold ? C.goldSh : m.kind==='bomb' ? C.ink : m.kind==='card' ? C.goldSh : C.gray;
     // 封筒本体
     pr(x,y,w,h,C.ink);
-    pr(x+S,y+S,w-2*S,h-2*S, m.gold?C.gold:C.paper);
-    pr(x+S,y+h-2*S,w-2*S,S, m.gold?C.goldSh:C.gray);
-    // フラップ(階段状の斜線)
+    pr(x+S,y+S,w-2*S,h-2*S, bodyC);
+    pr(x+S,y+h-2*S,w-2*S,S, shC);
+    // フラップ
     for(let i=0;i<12;i++){
       const fy = y + S + Math.floor(i*0.62)*S;
       pr(x+S+i*S, fy, S, S, C.ink);
       pr(x+w-2*S-i*S, fy, S, S, C.ink);
     }
+    ctx.textAlign='center'; ctx.textBaseline='middle';
     if(m.gold){
-      ctx.font = (5*S)+"px 'DotGothic16',monospace";
-      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.font = ((m.rainbow?4:5)*S)+"px 'DotGothic16',monospace";
       ctx.fillStyle=C.ink;
-      ctx.fillText('内定', x+w/2, y+h*0.68);
+      ctx.fillText(m.rainbow?'大手内定':'内定', x+w/2, y+h*0.68);
+    } else if(m.kind==='card'){
+      ctx.font = (4*S)+"px 'DotGothic16',monospace";
+      ctx.fillStyle=C.ink;
+      ctx.fillText('名刺', x+w/2, y+h*0.62);
+    } else if(m.kind==='bomb'){
+      // 黒封筒+導火線
+      pr(x+w/2-S, y-2*S, S, 2*S, C.gray);
+      pr(x+w/2, y-3*S, S, S, Math.floor(elapsed*8)%2 ? C.gold : C.red);
+      const hs=6*S, hx=x+w-hs-2*S, hyv=y+h-hs-2*S;
+      pr(hx,hyv,hs,hs,C.red);
+      ctx.font = (4*S)+"px 'DotGothic16',monospace";
+      ctx.fillStyle=C.paper;
+      ctx.fillText('爆', hx+hs/2, hyv+hs/2+S*0.3);
     } else {
       // 宛名行
-      pr(x+3*S, y+11*S, 9*S, S, C.gray);
-      pr(x+3*S, y+13*S, 7*S, S, C.gray);
-      pr(x+3*S, y+15*S, 8*S, S, C.gray);
-      // 朱印「祈」
+      pr(x+3*S, y+11*S, 9*S, S, shC);
+      pr(x+3*S, y+13*S, 7*S, S, shC);
+      pr(x+3*S, y+15*S, 8*S, S, shC);
+      // 朱印
       const hs=6*S, hx=x+w-hs-2*S, hyv=y+h-hs-2*S;
       pr(hx,hyv,hs,hs,C.red);
       pr(hx+S,hyv+S,hs-2*S,hs-2*S,C.redDark);
       ctx.font = (4*S)+"px 'DotGothic16',monospace";
-      ctx.textAlign='center'; ctx.textBaseline='middle';
       ctx.fillStyle=C.paper;
-      ctx.fillText('祈', hx+hs/2, hyv+hs/2+S*0.3);
+      ctx.fillText(m.kind==='pressure' ? '圧' : '祈', hx+hs/2, hyv+hs/2+S*0.3);
+    }
+    // 圧迫面接:残りHPピップ
+    if(m.kind==='pressure'){
+      for(let i=0;i<3;i++){
+        pr(x+w/2-4*S+i*3*S, y-3*S, 2*S, 2*S, i<m.hp ? C.red : C.dim);
+      }
     }
     ctx.restore();
   }
 
-  function drawPads(){
-    const laneW = W/LANES;
-    const py = hitY()+48, ph = H-py-10;
-    for(let i=0;i<LANES;i++){
-      const px_ = i*laneW + PX*3;
-      const pw = laneW - PX*6;
-      // 台座
-      pr(px_, py, pw, ph, C.ink);
-      pr(px_+PX, py+PX, pw-2*PX, ph-2*PX, C.tatamiD);
-      // 発光
-      if(padFlash[i]>0){
-        ctx.save();
-        ctx.globalAlpha = padFlash[i]*0.55;
-        pr(px_+PX, py+PX, pw-2*PX, ph-2*PX, C.paper);
-        ctx.restore();
-      }
-      // ラベル「突」
-      ctx.save();
-      ctx.globalAlpha = 0.5;
-      pxText(i===0?'左':'右', i*laneW+laneW/2, py+ph*0.72, 18, C.gray);
-      ctx.restore();
+  function drawMaster(){
+    // 中央の空手家:左パッド=左正拳、右パッド=右正拳
+    const u = Math.max(2, Math.round(Math.min(W/120, H/212)));
+    const cx = W/2;
+    const Y = ym => Math.round((H - (212-ym)*u)/u)*u;
+    const pL = fists[0], pR = fists[1];
+    const f = (pR>pL) ? -1 : 1; // 1=左構え(モック準拠) / -1=左右反転
+    const X = (xm,w) => Math.round(((f===1) ? cx+(xm-60)*u : cx-(xm-60+w)*u)/u)*u;
+    const pb = (xm,ym,w,h,fill)=>{
+      pr(X(xm,w),Y(ym),w*u,h*u,C.ink);
+      pr(X(xm,w)+u,Y(ym)+u,(w-2)*u,(h-2)*u,fill);
+    };
+    // 後ろ足
+    pb(66,190,9,7,C.paper); pb(72,196,9,6,C.paper);
+    pr(X(72,11),Y(202),11*u,4*u,C.ink);
+    // 前足
+    pb(48,190,9,12,C.paper);
+    pr(X(42,11),Y(202),11*u,4*u,C.ink);
+    // 胴体
+    pb(49,168,22,23,C.paper);
+    pr(X(59,1),Y(169),u,6*u,C.ink); pr(X(61,1),Y(169),u,4*u,C.ink); // 襟
+    // 帯(スコアで昇段して色が変わる)
+    const beltC = BELTS[lastBelt].c;
+    pr(X(50,20),Y(184),20*u,3*u,beltC);
+    pr(X(46,4),Y(186),4*u,7*u,beltC);
+    if(lastBelt===6){ pr(X(50,20),Y(183),20*u,u,'#3a3f5c'); } // 黒帯は縁取りで視認性UP
+    // 引き手(逆側の腕)
+    pb(69,174,8,6,C.paper); pb(76,175,5,5,C.skin);
+    // 突き腕:引き付け位置→レーン打点へ伸縮
+    const p = Math.max(pL,pR);
+    const lane = (f===1) ? 0 : 1;
+    const shX = X(52,0), shY = Y(171);
+    const chX = X(40,0), chY = Y(176);
+    const e = easeOut(p);
+    const fxp = chX + (laneX(lane)-chX)*e;
+    const fyp = chY + ((hitY()-2*u)-chY)*e;
+    for(const t of [0.3,0.55,0.8]){
+      const ax = Math.round((shX+(fxp-shX)*t)/u)*u;
+      const ay = Math.round((shY+(fyp-shY)*t)/u)*u;
+      pr(ax-4*u,ay-3*u,9*u,7*u,C.ink);
+      pr(ax-3*u,ay-2*u,7*u,5*u,C.paper);
     }
-  }
-
-  function drawFists(){
-    const S = Math.max(3, Math.floor(W/(LANES*26)));
-    const fw=12*S, fh=9*S;
-    for(let i=0;i<LANES;i++){
-      const x=laneX(i);
-      const p=fists[i];
-      const rest=H-70, up=hitY()+6;
-      const y = rest + (up-rest)*easeOut(p);
-      const fx=Math.round((x-fw/2)/S)*S, fy=Math.round(y/S)*S;
-      drawSprite(FIST, fx, fy, S, FIST_PAL);
-      // 道着の袖
-      const sw=10*S;
-      const sx=Math.round((x-sw/2)/S)*S;
-      pr(sx, fy+fh, sw, H-(fy+fh), C.ink);
-      pr(sx+S, fy+fh, sw-2*S, H-(fy+fh), C.paper);
-      pr(sx+S, fy+fh+2*S, sw-2*S, 2*S, C.red);
+    const fx2 = Math.round(fxp/u)*u, fy2 = Math.round(fyp/u)*u;
+    pr(fx2-5*u,fy2-4*u,10*u,9*u,C.ink);
+    pr(fx2-4*u,fy2-3*u,8*u,7*u,C.skin);
+    pr(fx2-3*u,fy2-u,6*u,u,C.skinSh);
+    // 頭(腕より手前に)
+    const rojin = kansha>=10000; // 一万回で老師範に
+    pb(53,155,14,14,C.skin);
+    pr(X(54,12),Y(156),12*u,3*u, rojin ? C.gray : C.ink); // 髪(白髪化)
+    pr(X(53,14),Y(160),14*u,3*u,C.red);          // 鉢巻
+    pr(X(46,7),Y(159),7*u,2*u,C.red); pr(X(42,5),Y(157),5*u,2*u,C.red); // 鉢巻の尾
+    pr(X(56,1),Y(164),u,u,C.ink);                // 目
+    if(rojin) pr(X(55,9),Y(167),9*u,2*u,C.gray); // 白ひげ
+    // 表情
+    if(combo>=10) pr(X(55,3),Y(162),3*u,u,C.ink);            // キリッ眉
+    if(hearts<=1){
+      pr(X(51,2),Y(156),2*u,2*u,'#3b6fd4');                   // 冷や汗
+      pr(X(56,2),Y(166),2*u,u,C.ink);                          // への口
     }
   }
   function easeOut(t){ return 1-Math.pow(1-t,3); }
@@ -891,29 +1664,105 @@
   // ---------- main loop ----------
   function loop(ts){
     if(!running) return;
-    const dt=Math.min((ts-tPrev)/1000,0.05); tPrev=ts;
+    if(paused){ tPrev=ts; requestAnimationFrame(loop); return; }
+    let dt=Math.min((ts-tPrev)/1000,0.05); tPrev=ts;
+    if(hitstop>0){ hitstop-=dt; dt=0; } // ヒットストップ:一瞬だけ世界が止まる
     elapsed+=dt;
+    if(debuffT>0) debuffT-=dt;
+    if(zoneT>0) zoneT-=dt;
+    if(counterT>0) counterT-=dt;
+    if(flashT>0) flashT-=dt;
+    if(bonusT>0) bonusT-=dt;
+    // 感謝の累計マイルストーン(老師範化)
+    if(kansha>=nextKanshaGoal){
+      addText(W/2, H*0.28, (nextKanshaGoal/10000)+'万回、達成!!', C.gold, 30);
+      nextKanshaGoal += 10000;
+      sGold(); flashT=0.15;
+    }
+    // 一万回の型(必殺乱舞)
+    if(ultActive>0){
+      ultActive-=dt; ultTick-=dt;
+      if(ultTick<=0){
+        ultTick=0.09;
+        let tgt=null, ty=-1;
+        for(const m of mails){ if(!m.dead && !m.gold && m.y>0 && m.y>ty){ ty=m.y; tgt=m; } }
+        if(tgt){
+          fists[tgt.lane]=1;
+          killMail(tgt, laneX(tgt.lane), tgt.y, 150);
+          sPunch(true);
+          if(stageKills>=curStage().need){ updateHUD(); stageClear(); }
+          updateHUD();
+        }
+      }
+    }
+    const bi = beltIdx(score);
+    if(bi > lastBelt){
+      lastBelt = bi;
+      addText(W/2, H*0.3, BELTS[bi].n + 'に昇段!!', C.gold, 28);
+      sGold();
+    }
+    callTimer+=dt;
+    if(callTimer>=nextCall && introT<=0){ triggerCall(); requestAnimationFrame(loop); return; }
+    // ゴースト対戦(過去の自分とリアルタイム比較)
+    while(runArr.length <= elapsed) runArr.push(score);
+    if(ghostArr.length && Math.floor(elapsed)!==ghostTick){
+      ghostTick = Math.floor(elapsed);
+      const gs = ghostArr[Math.min(ghostArr.length-1, ghostTick)];
+      const diff = score - gs;
+      ghostEl.textContent = 'GHOST ' + gs + (diff>=0 ? ' (+'+diff+')' : ' ('+diff+')');
+      ghostEl.style.color = diff>=0 ? '#2f9e44' : '#e43b44';
+    }
 
-    if(introT>0){ introT-=dt; }
+    if(tutLeft>0){
+      spawnTimer-=dt;
+      if(spawnTimer<=0 && !mails.some(m=>!m.dead)){
+        mails.push({
+          lane:(3-tutLeft)%2, y:-60, speed:95*(H/700),
+          kind:'normal', gold:false, hp:1,
+          snippet:SNIPPETS[0], dead:false, ghost:false, vary:false, ph:0
+        });
+        spawnTimer=1.4;
+      }
+    }
+    else if(introT>0){ introT-=dt; }
+    else if(silenceT>0){ silenceT-=dt; } // お祈りすらこない…
     else {
       spawnTimer-=dt;
       if(spawnTimer<=0){
-        spawn();
-        const iv = curStage().iv / endlessBoost();
-        spawnTimer = iv*(0.7+Math.random()*0.6);
+        const r = R();
+        if(bonusT<=0 && volleyLeft===0 && stageIdx>=1 && r<0.04){
+          silenceT=2.2;
+        } else if(bonusT<=0 && volleyLeft===0 && stageIdx>=2 && r<0.07){
+          bonusT=5;
+          addText(W/2, H*0.3, 'ボーナス:合同説明会!!', C.gold, 24);
+        } else {
+          spawn();
+        }
+        const spb = 60/bgmBpm()/2; // 8分音符の長さ
+        let iv = bonusT>0 ? 0.22 : volleyLeft>0 ? 0.18 : curStage().iv / endlessBoost();
+        if(!(volleyLeft>0||bonusT>0)) iv = iv*(0.7+R()*0.6);
+        spawnTimer = Math.max(spb, Math.round(iv/spb)*spb); // BGMの拍に同期して降る
       }
     }
 
     for(const m of mails){
       if(m.dead) continue;
-      m.y += m.speed * (m.vary ? (1+0.45*Math.sin(elapsed*5+m.ph)) : 1) * dt;
+      m.y += m.speed * (m.vary ? (1+0.45*Math.sin(elapsed*5+m.ph)) : 1) * (debuffT>0 ? 1.35 : 1) * (zoneT>0 ? 0.55 : 1) * dt;
       if(m.y > H+50){
         m.dead=true;
         if(m.gold){
+          if(m.rainbow){
+            hearts=buff.hearts; score+=1500; gotBig=true;
+            addText(laneX(m.lane), H*0.5, '🌈大手内定!!♥ぜんかいふく', C.gold, 22);
+            flashT=0.15;
+          }
           score+=500; naitei++; sGold();
-          if(hearts<5){ hearts++; addText(laneX(m.lane),H*0.55,'内定'+naitei+'社目! ♥+1',C.gold,20); }
-          else addText(laneX(m.lane),H*0.55,'内定'+naitei+'社目! +500',C.gold,20);
+          counterT=3; // 裏拳カウンター:3秒間スコア2倍
+          if(hearts<buff.hearts){ hearts++; addText(laneX(m.lane),H*0.55,'内定'+naitei+'社目! ♥+1 ×2倍!',C.gold,18); }
+          else addText(laneX(m.lane),H*0.55,'内定'+naitei+'社目! ×2倍!',C.gold,18);
           updateHUD();
+        } else if(m.kind==='card'){
+          // 名刺は逃してもノーペナルティ
         } else {
           loseHeart('撃ち漏らし…');
         }
@@ -929,10 +1778,21 @@
     drawBG();
     drawPads();
     drawStageHUD();
+    drawTutorial();
     for(const m of mails) drawMail(m);
-    drawFists();
+    drawMaster();
     drawParts(dt);
     drawTexts(dt);
+    // ジュース:フラッシュとゾーンの色
+    if(flashT>0){ ctx.globalAlpha=Math.min(.6,flashT*5); pr(0,0,W,H,C.paper); ctx.globalAlpha=1; }
+    if(zoneT>0){ ctx.globalAlpha=.08; pr(0,0,W,H,C.gold); ctx.globalAlpha=1; }
+    if(counterT>0) pxText('裏拳カウンター ×2', W/2, 106, 12, C.gold);
+    if(silenceT>0) pxText('…お祈りすらこない…', W/2, H*0.32, 18, C.gray);
+    if(bonusT>0) pxText('合同説明会 ' + Math.ceil(bonusT) + 's', W/2, 106, 12, C.gold);
+    // 感謝ゲージ
+    const gy = hitY()+38;
+    pr(W*0.15, gy, W*0.7, PX*2, C.ink);
+    pr(W*0.15, gy, W*0.7*(gauge/100), PX*2, gauge>=100 ? (Math.floor(elapsed*6)%2?C.gold:C.paper) : C.gold);
     ctx.restore();
 
     requestAnimationFrame(loop);
@@ -940,7 +1800,7 @@
 
   // ---------- input ----------
   stageEl.addEventListener('pointerdown', e=>{
-    if(!running) return;
+    if(!running || paused) return;
     const rect=stageEl.getBoundingClientRect();
     if(e.pointerType==='mouse'){
       punch((e.button===2) ? 1 : 0); // 左クリック=左の正拳 / 右クリック=右の正拳
@@ -960,6 +1820,31 @@
     if(map[e.key]!==undefined){ e.preventDefault(); punch(map[e.key]); }
   });
 
+  const ultBtn = document.getElementById('ultBtn');
+  ultBtn.addEventListener('pointerdown', e => e.stopPropagation());
+  ultBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    if(gauge<100 || !running || paused || ultActive>0) return;
+    gauge=0; ultActive=2.2; ultTick=0;
+    ultBtn.classList.add('hidden');
+    // 初回のみチュートリアル(ゆっくり3通・ノーダメージ)
+    tutLeft = loadS('dojoTut', false) ? 0 : 3;
+    if(tutLeft>0){ introT=0; nextCall=99999; }
+    if(dailyMode){
+      let h=0; for(const ch of todayKey()) h=(h*33+ch.charCodeAt(0))>>>0;
+      seedRng(h);
+      nextCall = 20; // デイリーは全員おなじタイミング
+    }
+    newDexRun=0; gotBig=false;
+    runArr=[]; ghostTick=-1;
+    ghostArr = loadS('dojoGhost', []);
+    ghostBest = loadS('dojoBestScore', 0);
+    ghostEl.textContent = ghostBest>0 ? 'GHOST ' + ghostBest : '';
+    addText(W/2, H*0.35, '一万回の型!!', C.gold, 32);
+    flashT=0.18;
+    if(navigator.vibrate) navigator.vibrate(60);
+  });
+
   const muteBtn = document.getElementById('muteBtn');
   muteBtn.addEventListener('click', e => {
     e.stopPropagation();
@@ -969,8 +1854,49 @@
   });
   muteBtn.addEventListener('pointerdown', e => e.stopPropagation());
 
+  const uniInput = document.getElementById('uniInput');
+  const uniRankEl = document.getElementById('uniRank');
+  const uniSuggestEl = document.getElementById('uniSuggest');
+  function previewUni(){
+    const rank = matchUni(uniInput.value);
+    const b = RANK_BUFFS[rank];
+    uniRankEl.textContent = (uniInput.value.trim() ? '判定:' : '未入力 → ') + b.label + ' ' + b.desc;
+  }
+  function renderSuggest(){
+    const list = suggestUni(uniInput.value);
+    if(list.length===0 || normUni(uniInput.value)===''){
+      uniSuggestEl.style.display='none';
+      uniSuggestEl.innerHTML='';
+      return;
+    }
+    uniSuggestEl.innerHTML = list.map(u =>
+      `<div class="row" data-n="${u.n}"><span>${u.n}</span><span class="rk rk${u.r}">${u.r}級</span></div>`
+    ).join('');
+    uniSuggestEl.style.display='block';
+  }
+  uniInput.addEventListener('input', ()=>{ previewUni(); renderSuggest(); });
+  uniInput.addEventListener('focus', renderSuggest);
+  uniSuggestEl.addEventListener('pointerdown', e=>{
+    const row = e.target.closest('.row');
+    if(!row) return;
+    e.preventDefault();
+    uniInput.value = row.dataset.n;
+    uniSuggestEl.style.display='none';
+    previewUni();
+  });
+  document.addEventListener('pointerdown', e=>{
+    if(!e.target.closest('.inputwrap')) uniSuggestEl.style.display='none';
+  });
+
   function start(){
     audio();
+    bumpStreak();
+    const rank = matchUni(uniInput.value);
+    buff = RANK_BUFFS[rank];
+    const uniName = uniInput.value.trim();
+    buffMsg = (uniName ? uniName + ' ─ ' : '') + buff.label + ' ×' + buff.mult.toFixed(1);
+    uniSuggestEl.style.display='none';
+    uniInput.blur();
     reset();
     startOv.classList.add('hidden');
     overOv.classList.add('hidden');
@@ -978,8 +1904,61 @@
     bgmStart();
     requestAnimationFrame(loop);
   }
-  document.getElementById('startBtn').addEventListener('click',start);
-  document.getElementById('retryBtn').addEventListener('click',start);
+  document.getElementById('startBtn').addEventListener('click', ()=>{ dailyMode=false; start(); });
+  document.getElementById('dailyBtn').addEventListener('click', ()=>{ dailyMode=true; start(); });
+  document.getElementById('retryBtn').addEventListener('click', start);
+
+  // ゲームオーバー画面をすばやく2回タップ → 即再入門(リトライ摩擦ゼロ)
+  let goTaps=0, goTapT=0;
+  overOv.addEventListener('pointerdown', e=>{
+    if(e.target.closest('button,a,input')) return;
+    const now = performance.now();
+    if(now-goTapT>1200) goTaps=0;
+    goTapT=now; goTaps++;
+    if(goTaps>=2){ goTaps=0; start(); }
+  });
+
+  // 図鑑
+  const dexOv = document.getElementById('dexOv');
+  function renderDex(){
+    const got = loadS('dojoDex', []);
+    document.getElementById('dexList').innerHTML =
+      '<div style="text-align:center;margin-bottom:6px">'+got.length+' / '+MAILDEX.length+'</div>' +
+      MAILDEX.map((e,i)=>{
+        const has = got.includes(i);
+        return '<div class="dexrow'+(has?'':' locked')+'"><span>'+(has?e.t:'???')+'</span><span class="rr r'+e.r+'">'+e.r+'</span></div>';
+      }).join('');
+  }
+  document.getElementById('dexLink').addEventListener('click', ()=>{ renderDex(); dexOv.classList.remove('hidden'); });
+  document.getElementById('dexClose').addEventListener('click', ()=>{ dexOv.classList.add('hidden'); });
+
+  // 連続修行ストリーク(プレイした日だけ加算)
+  function bumpStreak(){
+    const s = loadS('dojoStreak', {last:'', count:0});
+    const tk = todayKey();
+    if(s.last !== tk){
+      const y = new Date(Date.now()-86400000).toISOString().slice(0,10);
+      s.count = (s.last===y) ? s.count+1 : 1;
+      s.last = tk;
+      store('dojoStreak', s);
+    }
+    return s.count;
+  }
+
+  const dailyEl = document.getElementById('daily');
+  const wallEl = document.getElementById('wall');
+  function updateStartMeta(){
+    const q = todayQuest();
+    const done = loadS('dojoDaily','')===todayKey();
+    dailyEl.innerHTML = '📜 今日の修行:' + q.d + (done ? ' <span style="color:var(--gold)">達成済(♥+1)</span>' : '');
+    const bb = loadS('dojoBelt', 0);
+    const bc = BELTS[bb].c==='#101018' ? '#9aa0be' : BELTS[bb].c;
+    wallEl.innerHTML = '🥋 道場の壁 ─ 最高段位:<span style="color:'+bc+'">'+BELTS[bb].n+'</span>';
+    const st = loadS('dojoStreak', {last:'',count:0});
+    document.getElementById('streak').textContent = st.count>0 ? '🔥 連続修行 '+st.count+'日目' : '';
+    document.getElementById('dexLink').textContent = '📖 お祈り図鑑 '+loadS('dojoDex',[]).length+'/'+MAILDEX.length;
+  }
+  updateStartMeta();
 
   document.body.classList.add(window.matchMedia('(pointer: coarse)').matches ? 'touch' : 'pc');
 
